@@ -1,61 +1,44 @@
-import React from "react";
-import {Button, Menu} from "semantic-ui-react";
-import {Container} from "semantic-ui-react";
-import {Icon} from "semantic-ui-react";
-import {Header} from "semantic-ui-react";
-
-const NaviMainMenu = () => (
-    <div>
-        <Button animated color={"orange"}>
-            <Button.Content visible>Home</Button.Content>
-            <Button.Content hidden><Icon name='arrow right'/></Button.Content>
-        </Button>
-        <Button animated='fade' color={"orange"}>
-            <Button.Content visible>Help</Button.Content>
-            <Button.Content hidden><Icon name= 'question'/></Button.Content>
-        </Button>
-        <Button animated='vertical' color={"orange"}>
-            <Button.Content hidden><Icon name='find' /></Button.Content>
-            <Button.Content visible>
-                Job Advertisements
-            </Button.Content>
-        </Button>
-    </div>
-)
+import React, {useState} from "react";
+import {Menu, Container, Icon} from "semantic-ui-react";
+import {Link} from "react-router-dom";
+import SignedIn from "./SignedIn"
+import SignedOut from "./SignedOut"
 
 export default function Navi() {
+
+    const [isAuthenticated, setIsAuthenticated] = useState(true)
+
+    const [isEmployer, setIsEmployer] = useState(false)
+
+    function handleSignOut() {
+        setIsAuthenticated(false)
+    }
+
+    function handleSignIn(){
+        setIsAuthenticated(true)
+    }
+
+    function handleEmployer(is){
+        setIsEmployer(is)
+    }
+
     return (
         <div>
-            <Menu inverted fixed="top">
+            <Menu size="huge" fixed="top">
                 <Container>
-                    <div className="logo">
-                        <Header as="h2">
-                            <Icon
-                                inverted
-                                color="orange"
-                                name="gg"
-                                size="small"
-                            />
-                        </Header>
-                    </div>
-                    <div className="MainMenu">
-                        <Menu.Menu position="left">
-                            <Menu.Item>
-                                <NaviMainMenu/>
-                            </Menu.Item>
-                        </Menu.Menu>
-                    </div>
-                    <div className="searchBar">
-                        <div className="ui grid">
-                            <div className="six wide column">
-                                <div className="ui search">
-                                    <div className="ui icon input"><input type="text" autoComplete="off" value=""
-                                                                          tabIndex="0" className="prompt"/><i
-                                        aria-hidden="true" className="search icon" /></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+                    <Menu.Item name="Main Page" as={Link} to={"/"}><Icon name="home" size="large" style={{margin: '5px'}}/></Menu.Item>
+
+                    {isEmployer ?
+                        <Menu.Item name="Post Job" as={Link} to={"/postJobAdvertisement"}>Post Job</Menu.Item> :
+                        <Menu.Item name="Find Jobs" as={Link} to={"/jobAdvertisements"}>Find Jobs</Menu.Item>}
+
+                    <Menu.Item name="Users" as={Link} to={"/users"}>Users</Menu.Item>
+
+                    {isAuthenticated ?
+                        <SignedIn signOut = {handleSignOut} employer={handleEmployer}/> :
+                        <SignedOut login={handleSignIn} employer={handleEmployer}/>}
+
                 </Container>
             </Menu>
         </div>

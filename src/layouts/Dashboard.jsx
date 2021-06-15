@@ -1,8 +1,12 @@
 import React from 'react'
-import {Button, Divider, Form, Grid, Segment, Tab} from 'semantic-ui-react'
+import {Tab} from 'semantic-ui-react'
 import EmployerList from "../pages/EmployerList";
 import CandidateList from "../pages/CandidateList";
 import SystemEmployeeList from "../pages/SystemEmployeeList";
+import {Route} from "react-router-dom";
+import JobAdvertisementList from "../pages/JobAdvertisementList";
+import JobAdvertisementDetail from "../pages/JobAdvertisementDetail";
+import JobAdvertisementAdd from "../pages/JobAdvertisementAdd";
 
 const panes = [
     {
@@ -29,12 +33,24 @@ const panes = [
 ]
 
 const UsersTable = () => (
-    <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
+    <Tab menu={{secondary: true, pointing: true}} panes={panes}/>
 )
 
 export default function Dashboard() {
     return (
         <div>
+            <Route exact path = "/" component = {JobAdvertisementList}/>
+            <Route exact path = "/jobAdvertisements" component = {JobAdvertisementList}/>
+            <Route exact path = "/jobAdvertisements/:id" component = {JobAdvertisementDetail}/>
+            <Route exact path = "/postJobAdvertisement" component = {JobAdvertisementAdd}/>
+            <Route exact path = "/users" component = {UsersTable}/>
+        </div>
+
+    )
+}
+
+/*<div className="ui segment active tab">
+            <Divider horizontal> </Divider>
             <Segment placeholder>
                 <Grid columns={2} relaxed='very' stackable>
                     <Grid.Column>
@@ -60,10 +76,5 @@ export default function Dashboard() {
 
                 <Divider vertical>Or</Divider>
             </Segment>
-            <div className="ui segment active tab">
-                <Divider horizontal> </Divider>
-                <UsersTable/>
-            </div>
-        </div>
-    )
-}
+
+        </div>*/

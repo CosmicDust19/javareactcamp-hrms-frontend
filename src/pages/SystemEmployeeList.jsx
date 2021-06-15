@@ -11,13 +11,11 @@ let placeholderImageUrls = ['https://semantic-ui.com/images/avatar/small/ade.jpg
 let imageUrl = placeholderImageUrls[Math.floor(Math.random() * 7)]
 
 export default function SystemEmployeeList() {
-    const [systemEmployee, setSystemEmployee] = useState([]);
+    const [systemEmployees, setSystemEmployee] = useState([]);
     useEffect(() => {
         let systemEmployeeService = new SystemEmployeeService();
-        systemEmployeeService
-            .getSystemEmployees()
-            .then((result) => setSystemEmployee(result.data.data));
-    });
+        systemEmployeeService.getSystemEmployees().then((result) => setSystemEmployee(result.data.data));
+    }, []);
 
     return (
         <Table basic='very' celled collapsing>
@@ -28,11 +26,11 @@ export default function SystemEmployeeList() {
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {systemEmployee.map((systemEmployee) => (
+                {systemEmployees.map((systemEmployee) => (
                     <Table.Row key={systemEmployee.id}>
                         <Table.Cell>
                             <Header as='h4' image>
-                                <Image src = {imageUrl} rounded size='mini'/>
+                                <Image src={imageUrl} rounded size='mini'/>
                                 <Header.Content>
                                     {systemEmployee.firstName}
                                     <Header.Subheader>{systemEmployee.lastName}</Header.Subheader>

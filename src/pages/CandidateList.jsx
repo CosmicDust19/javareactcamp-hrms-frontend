@@ -4,13 +4,11 @@ import {Table} from "semantic-ui-react";
 import {useState, useEffect} from "react";
 
 export default function CandidateList() {
-    const [candidate, setCandidate] = useState([]);
+    const [candidates, setCandidate] = useState([]);
     useEffect(() => {
         let candidateService = new CandidateService();
-        candidateService
-            .getCandidates()
-            .then((result) => setCandidate(result.data.data));
-    });
+        candidateService.getCandidates().then((result) => setCandidate(result.data.data));
+    },[]);
 
     return (
         <div>
@@ -29,7 +27,7 @@ export default function CandidateList() {
                 </Table.Header>
 
                 <Table.Body>
-                    {candidate.map((candidate) => (
+                    {candidates.map((candidate) => (
                         <Table.Row key={candidate.id}>
                             <Table.Cell>{candidate.id}</Table.Cell>
                             <Table.Cell>{candidate.email}</Table.Cell>
