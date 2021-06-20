@@ -1,7 +1,7 @@
 import {Dropdown, Icon, Image, Menu} from "semantic-ui-react";
 import React from "react";
 
-export default function SignedIn({signOut, employer}) {
+export default function SignedIn({signOut, isEmployer}) {
     return (
         <Menu.Menu  position='right'>
             <Menu.Item>
@@ -10,7 +10,7 @@ export default function SignedIn({signOut, employer}) {
                     <Dropdown.Menu>
                         <Dropdown.Item><Icon name = "info"/>Account</Dropdown.Item>
                         <Dropdown.Item><Icon name = "settings"/>Settings</Dropdown.Item>
-                        <Dropdown.Item onClick = {() => {signOut();employer(false);}}><Icon name = "sign out"/>Sign Out</Dropdown.Item>
+                        <Dropdown.Item onClick = {() => {signOut();isEmployer(false);}}><Icon name = "sign out"/>Sign Out</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </Menu.Item>

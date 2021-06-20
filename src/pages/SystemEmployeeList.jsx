@@ -8,7 +8,6 @@ let placeholderImageUrls = ['https://semantic-ui.com/images/avatar/small/ade.jpg
     'https://semantic-ui.com/images/avatar/small/daniel.jpg', 'https://semantic-ui.com/images/avatar/small/elliot.jpg',
     'https://semantic-ui.com/images/avatar/small/helen.jpg', 'https://semantic-ui.com/images/avatar/small/jenny.jpg']
 
-let imageUrl = placeholderImageUrls[Math.floor(Math.random() * 7)]
 
 export default function SystemEmployeeList() {
     const [systemEmployees, setSystemEmployee] = useState([]);
@@ -30,9 +29,8 @@ export default function SystemEmployeeList() {
                     <Table.Row key={systemEmployee.id}>
                         <Table.Cell>
                             <Header as='h4' image>
-                                <Image src={imageUrl} rounded size='mini'/>
-                                <Header.Content>
-                                    {systemEmployee.firstName}
+                                <Image src={placeholderImageUrls[Math.floor(Math.random() * 7)]} rounded size='mini'/>
+                                <Header.Content>{systemEmployee.firstName}
                                     <Header.Subheader>{systemEmployee.lastName}</Header.Subheader>
                                 </Header.Content>
                             </Header>

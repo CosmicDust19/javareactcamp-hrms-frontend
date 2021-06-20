@@ -1,51 +1,81 @@
-import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
+import React, {useEffect, useState, Component} from "react";
+import {useFormik} from "formik";
 import * as Yup from "yup";
-import { Button, Dropdown, Input, TextArea, Card, Form, Grid } from "semantic-ui-react";
+import {
+    Button,
+    Dropdown,
+    Input,
+    TextArea,
+    Card,
+    Form,
+    Grid,
+    GridColumn,
+    Segment,
+    Progress,
+    Icon
+} from "semantic-ui-react";
 import CityService from "../services/cityService";
 import PositionService from "../services/positionService";
 import JobAdvertisementService from "../services/jobAdvertisementService";
-import { useHistory } from "react-router-dom";
+
+class ProgressBar extends Component {
+
+    constructor(props) {
+        super(props);
+        this.increment = this.increment.bind(this);
+        this.state = {percent: 0};
+    }
+
+    increment = () =>
+        this.setState((prevState) => ({
+            percent: prevState.percent + 10 >= 100 ? 100 : prevState.percent + 10,
+        }))
+
+    decrement = () =>
+        this.setState((prevState) => ({
+            percent: prevState.percent - 10 <= 0 ? 0 : prevState.percent - 10,
+        }))
+
+    render() {
+        return (
+            <div>
+                <Progress percent={this.state.percent} indicating/>
+            </div>
+        )
+    }
+}
 
 export default function JobAdvertisementAdd() {
+
     let jobAdvertisementService = new JobAdvertisementService();
     const JobAdvertisementAddSchema = Yup.object().shape({
-        applicationDeadline: Yup.date().nullable(),
-        jobDescription: Yup.string().required("This field cannot be empty"),
-        positionId: Yup.string().required("This field cannot be empty"),
-        workTimeId: Yup.string().required("This field cannot be empty"),
-        workModelId: Yup.string().required("This field cannot be empty"),
-        numberOfPeopleToBeHired: Yup.string().required("This field cannot be empty").min(1,"This field cannot be less than 1"),
-        cityId: Yup.string().required("This field cannot be empty"),
-        minSalary: Yup.number().min(0,"Cannot be less than 0"),
-        maxSalary: Yup.number().min(0,"Cannot be less than 0")
+        position: Yup.object().required("This field cannot be empty"),
+        city: Yup.object().required("This field cannot be empty"),
+        workModel: Yup.string().required("This field cannot be empty"),
+        workTime: Yup.string().required("This field cannot be empty"),
+        minSalary: Yup.number().nullable().min(0, "Cannot be less than 0"),
+        maxSalary: Yup.number().nullable().min(0, "Cannot be less than 0"),
+        numberOfPeopleToBeHired: Yup.string().required("This field cannot be empty").min(1, "This field cannot be less than 1"),
+        applicationDeadline: Yup.date().nullable().min(new Date().getDay(), "Deadline must be in the future"),
+        jobDescription: Yup.string().required("This field cannot be empty")
     });
-
-    const history = useHistory();
 
     const formik = useFormik({
         initialValues: {
-            jobDescription: "",
-            positionId: "",
-            workTimeId: "",
-            workModelId: "",
-            numberOfPeopleToBeHired: "",
-            cityId: "",
-            minSalary: "",
-            maxSalary: "",
-            applicationDeadline: "",
+            jobDescription: "", position: {}, workTime: "",
+            workModel: "", numberOfPeopleToBeHired: "", city: {},
+            minSalary: "", maxSalary: "", applicationDeadline: "",
         },
         validationSchema: JobAdvertisementAddSchema,
         onSubmit: (values) => {
-            values.employerId = 2;
+            values.employerId = 7;
             jobAdvertisementService.add(values).then((result) => console.log(result.data.data));
             alert("Advertisement has been published");
-            history.push("/jobAdvertisement");
         },
     });
 
-    const [workTimes, setWorkTimes] = useState([]);
-    const [workModals, setWorkModals] = useState([]);
+    const [workTimes] = useState(["Part Time", "Full Time"]);
+    const [workModals] = useState(["Remote", "Office"]);
     const [cities, setCities] = useState([]);
     const [positions, setPositions] = useState([]);
 
@@ -59,14 +89,14 @@ export default function JobAdvertisementAdd() {
 
     const workTimeOption = workTimes.map((workTime, index) => ({
         key: index,
-        text: workTime.name,
-        value: workTime.id,
+        text: workTime,
+        value: workTime,
     }));
 
     const workModalOption = workModals.map((workModal, index) => ({
         key: index,
-        text: workModal.name,
-        value: workModal.id,
+        text: workModal,
+        value: workModal,
     }));
 
     const cityOption = cities.map((city, index) => ({
@@ -81,108 +111,94 @@ export default function JobAdvertisementAdd() {
         value: position.id,
     }));
 
-    const handleChangeSemantic = (value, fieldName) => {
+    const handleChangeSemantic = (fieldName, value) => {
         formik.setFieldValue(fieldName, value);
     }
 
     return (
         <div>
-            <Card fluid>
-                <Card.Content header='Post Job' />
+            <ProgressBar/>
+            <Segment inverted color='blue' size={"big"} textAlign={"center"}>Post Job</Segment>
+            <Card fluid color={"blue"}>
                 <Card.Content>
                     <Form onSubmit={formik.handleSubmit}>
-                        <Form.Field style={{marginBottom: "1rem"}}>
-                            <label>Position</label>
-                            <Dropdown
-                                clearable
-                                item
-                                placeholder="Select a position"
-                                search
-                                selection
-                                onChange={(event, data) =>
-                                    handleChangeSemantic(data.value, "positionId")
-                                }
-                                onBlur={formik.handleBlur}
-                                id="positionId"
-                                value={formik.values.positionId}
-                                options={positionOption}
-                            />
-                            {formik.errors.positionId && formik.touched.positionId &&(
-                                <div className={"ui pointing red basic label"}>
-                                    {formik.errors.positionId}
-                                </div>
-                            )}
-                        </Form.Field>
                         <Form.Field>
-                            <label>City</label>
-                            <Dropdown
-                                clearable
-                                item
-                                placeholder="Select a city"
-                                search
-                                selection
-                                onChange={(event, data) =>
-                                    handleChangeSemantic(data.value, "cityId")
-                                }
-                                onBlur={formik.handleBlur}
-                                id="cityId"
-                                value={formik.values.cityId}
-                                options={cityOption}
-                            />
-                            {formik.errors.cityId && formik.touched.cityId && (
-                                <div className={"ui pointing red basic label"}>
-                                    {formik.errors.cityId}
-                                </div>
-                            )}
-                        </Form.Field>
-                        <Form.Field>
-                            <label>Work Place</label>
-                            <Dropdown
-                                clearable
-                                item
-                                placeholder="Enter Work Model"
-                                search
-                                selection
-                                onChange={(event, data) =>
-                                    handleChangeSemantic(data.value, "workModelId")
-                                }
-                                onBlur={formik.handleBlur}
-                                id="workModelId"
-                                value={formik.values.workModelId}
-                                options={workModalOption}
-                            />
-                            {formik.errors.workModelId && formik.touched.workModelId && (
-                                <div className={"ui pointing red basic label"}>
-                                    {formik.errors.workModelId}
-                                </div>
-                            )}
-                        </Form.Field>
-                        <Form.Field>
-                            <label>Work Time</label>
-                            <Dropdown
-                                clearable
-                                item
-                                placeholder="Work Time"
-                                search
-                                selection
-                                onChange={(event, data) =>
-                                    handleChangeSemantic(data.value, "workTimeId")
-                                }
-                                onBlur={formik.handleBlur}
-                                id="workTimeId"
-                                value={formik.values.workTimeId}
-                                options={workTimeOption}
-                            />
-                            {formik.errors.workTimeId && formik.touched.workTimeId && (
-                                <div className={"ui pointing red basic label"}>{formik.errors.workTimeId}</div>
-                            )}
+                            <Grid>
+                                <GridColumn width={4}>
+                                    <Dropdown clearable item placeholder="Select a position" search selection
+                                              onChange={(event, data) =>
+                                                  handleChangeSemantic("position.id", data.value)
+                                              }
+                                              onBlur={formik.handleBlur} id="id"
+                                              value={formik.values.position.id} options={positionOption}
+                                    />
+                                    {formik.errors.position && formik.touched.position && (
+                                        <div className={"ui pointing red basic label"}>
+                                            {formik.errors.position}
+                                        </div>
+                                    )}
+                                </GridColumn>
+                                <GridColumn width={4}>
+                                    <Dropdown clearable item placeholder="Select a city" search selection
+                                              onChange={(event, data) =>
+                                                  handleChangeSemantic("city.id", data.value)
+                                              }
+                                              onBlur={formik.handleBlur} id="id" value={formik.values.city.id}
+                                              options={cityOption}
+                                    />
+                                    {formik.errors.city && formik.touched.city && (
+                                        <div className={"ui pointing red basic label"}>
+                                            {formik.errors.city}
+                                        </div>
+                                    )}
+                                </GridColumn>
+                                <GridColumn width={4}>
+                                    <Dropdown clearable item placeholder="Enter Work Model" search selection
+                                              onChange={(event, data) =>
+                                                  handleChangeSemantic("workModel", data.value)
+                                              }
+                                              onBlur={formik.handleBlur} id="workModel"
+                                              value={formik.values.workModel} options={workModalOption}
+                                    />
+                                    {formik.errors.workModel && formik.touched.workModel && (
+                                        <div className={"ui pointing red basic label"}>
+                                            {formik.errors.workModel}
+                                        </div>
+                                    )}
+                                </GridColumn>
+                                <GridColumn width={4}>
+                                    <Dropdown clearable item placeholder="Enter Work Time" search selection
+                                              onChange={(event, data) =>
+                                                  handleChangeSemantic("workTime", data.value)
+                                              }
+                                              onBlur={formik.handleBlur} id="workTime"
+                                              value={formik.values.workTime} options={workTimeOption}
+                                    />
+                                    {formik.errors.workTime && formik.touched.workTime && (
+                                        <div className={"ui pointing red basic label"}>{formik.errors.workTime}</div>
+                                    )}
+                                </GridColumn>
+                            </Grid>
                         </Form.Field>
                         <Form.Field>
                             <Grid stackable>
                                 <Grid.Column width={8}>
-                                    <label style={{fontWeight: "bold"}}>Minimum Salary</label>
+                                    <Input style={{width: "89%"}}
+                                           id="numberOfPeopleToBeHired" name="numberOfPeopleToBeHired"
+                                           error={Boolean(formik.errors.numberOfPeopleToBeHired)}
+                                           onChange={formik.handleChange} value={formik.values.numberOfPeopleToBeHired}
+                                           onBlur={formik.handleBlur} type="number"
+                                           placeholder="Enter the number of people to be hired"
+                                    />
+                                    {formik.errors.numberOfPeopleToBeHired && formik.touched.numberOfPeopleToBeHired && (
+                                        <div className={"ui pointing red basic label"}>
+                                            {formik.errors.numberOfPeopleToBeHired}
+                                        </div>
+                                    )}
+                                </Grid.Column>
+                                <Grid.Column width={4}>
                                     <Input
-                                        style={{ width: "100%" }}
+                                        style={{width: "78%"}}
                                         type="number"
                                         placeholder="Enter Minimum Salary"
                                         value={formik.values.minSalary}
@@ -197,10 +213,9 @@ export default function JobAdvertisementAdd() {
                                         </div>
                                     )}
                                 </Grid.Column>
-                                <Grid.Column width={8}>
-                                    <label style={{fontWeight: "bold"}}>Maximum Salary</label>
+                                <Grid.Column width={4}>
                                     <Input
-                                        style={{ width: "100%" }}
+                                        style={{width: "78%"}}
                                         type="number"
                                         placeholder="Enter Maximum Salary"
                                         value={formik.values.maxSalary}
@@ -217,41 +232,35 @@ export default function JobAdvertisementAdd() {
                                 </Grid.Column>
                             </Grid>
                         </Form.Field>
-
                         <Form.Field>
                             <Grid stackable>
-                                <Grid.Column width={8}>
-                                    <label style={{fontWeight: "bold"}}>Number Of People To Be Hired</label>
-                                    <Input
-                                        style={{ width: "100%" }}
-                                        id="numberOfPeopleToBeHired"
-                                        name="numberOfPeopleToBeHired"
-                                        error={Boolean(formik.errors.numberOfPeopleToBeHired)}
+                                <Grid.Column width={12}>
+                                    <label style={{fontWeight: "bold"}}>Job Description</label>
+                                    <TextArea
+                                        placeholder="Enter Job Description"
+                                        style={{minHeight: 300, maxWidth: 762}}
+                                        error={Boolean(formik.errors.jobDescription).toString()}
+                                        value={formik.values.jobDescription}
+                                        name="jobDescription"
                                         onChange={formik.handleChange}
-                                        value={formik.values.numberOfPeopleToBeHired}
                                         onBlur={formik.handleBlur}
-                                        type="number"
-                                        placeholder="Enter the number of people to be hired"
                                     />
-                                    {formik.errors.numberOfPeopleToBeHired && formik.touched.numberOfPeopleToBeHired && (
+                                    {formik.errors.jobDescription && formik.touched.jobDescription && (
                                         <div className={"ui pointing red basic label"}>
-                                            {formik.errors.numberOfPeopleToBeHired}
+                                            {formik.errors.jobDescription}
                                         </div>
                                     )}
                                 </Grid.Column>
-                                <Grid.Column width={8}>
+                                <Grid.Column width={4}>
                                     <label style={{fontWeight: "bold"}}>Application Deadline</label>
                                     <Input
-                                        style={{ width: "100%" }}
-                                        type="date"
+                                        style={{width: "78%"}} type="date"
                                         error={Boolean(formik.errors.applicationDeadline)}
                                         onChange={(event, data) =>
-                                            handleChangeSemantic(data.value, "applicationDeadline")
+                                            handleChangeSemantic("applicationDeadline", data.value)
                                         }
-                                        value={formik.values.applicationDeadline}
-                                        onBlur={formik.handleBlur}
+                                        value={formik.values.applicationDeadline} onBlur={formik.handleBlur}
                                         name="applicationDeadline"
-                                        placeholder="Enter Application Deadline"
                                     />
                                     {formik.errors.applicationDeadline && formik.touched.applicationDeadline && (
                                         <div className={"ui pointing red basic label"}>
@@ -261,32 +270,10 @@ export default function JobAdvertisementAdd() {
                                 </Grid.Column>
                             </Grid>
                         </Form.Field>
-
-                        <Form.Field>
-                            <label>Job Description</label>
-                            <TextArea
-                                placeholder="Enter Job Description"
-                                style={{ minHeight: 100 }}
-                                error={Boolean(formik.errors.jobDescription).toString()}
-                                value={formik.values.jobDescription}
-                                name="jobDescription"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.jobDescription && formik.touched.jobDescription && (
-                                <div className={"ui pointing red basic label"}>
-                                    {formik.errors.jobDescription}
-                                </div>
-                            )}
-                        </Form.Field>
-                        <Button
-                            content="Post"
-                            labelPosition="right"
-                            icon="add"
-                            positive
-                            type="submit"
-                            style={{ marginLeft: "20px" }}
-                        />
+                        <Button animated="fade" positive type="submit">
+                            <Button.Content hidden><Icon name='checkmark'/></Button.Content>
+                            <Button.Content visible>Post</Button.Content>
+                        </Button>
                     </Form>
                 </Card.Content>
             </Card>

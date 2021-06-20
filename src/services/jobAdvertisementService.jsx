@@ -5,7 +5,7 @@ export default class JobAdvertisementService {
         return axios.get("http://localhost:8080/api/jobAdvertisements/getAllActives");
     }
 
-    getByJobAdvertisementId(id) {
+    getById(id) {
         return axios.get("http://localhost:8080/api/jobAdvertisements/getById?jobAdvertisementId=" + id);
     }
 

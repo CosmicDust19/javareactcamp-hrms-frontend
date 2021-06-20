@@ -6,7 +6,7 @@ import SignedOut from "./SignedOut"
 
 export default function Navi() {
 
-    const [isAuthenticated, setIsAuthenticated] = useState(true)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
 
     const [isEmployer, setIsEmployer] = useState(false)
 
@@ -18,12 +18,12 @@ export default function Navi() {
         setIsAuthenticated(true)
     }
 
-    function handleEmployer(is){
-        setIsEmployer(is)
+    function handleIsEmployer(isEmployer){
+        setIsEmployer(isEmployer)
     }
 
     return (
-        <div>
+        <div className={"navi"}>
             <Menu size="huge" fixed="top">
                 <Container>
 
@@ -36,8 +36,8 @@ export default function Navi() {
                     <Menu.Item name="Users" as={Link} to={"/users"}>Users</Menu.Item>
 
                     {isAuthenticated ?
-                        <SignedIn signOut = {handleSignOut} employer={handleEmployer}/> :
-                        <SignedOut login={handleSignIn} employer={handleEmployer}/>}
+                        <SignedIn signOut = {handleSignOut} isEmployer={handleIsEmployer}/> :
+                        <SignedOut login={handleSignIn} isEmployer={handleIsEmployer}/>}
 
                 </Container>
             </Menu>
