@@ -2,6 +2,6 @@ import axios from "axios"
 
 export default class CityService {
     getCities() {
-        return axios.get("http://localhost:8080/api/cities/getAll");
+        return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/cities/getAll");
     }
 }
