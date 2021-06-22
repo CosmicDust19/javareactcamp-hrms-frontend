@@ -2,10 +2,10 @@ import axios from "axios"
 
 export default class EmployerService {
     getEmployers(){
-        return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/getAll");
+        return axios.get("http://localhost:8080/api/employers/getAll");
     }
 
     getById(id){
-        return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/getById?id=" + id);
+        return axios.get("http://localhost:8080/api/employers/getById?id=" + id);
     }
 }
