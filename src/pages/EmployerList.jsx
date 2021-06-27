@@ -27,18 +27,20 @@ export default function EmployerList() {
             <Card.Group itemsPerRow={2} stackable>
                 {employers.map((employer) => (
                     <Card color={colors[Math.floor(Math.random() * 12)]} key={employer.id}>
-                            <Table celled >
+                            <Table celled>
                                 <Table.Header>
-                                    <Table.HeaderCell>
-                                        <Header>
-                                            {employer.companyName}
-                                        </Header>
-                                    </Table.HeaderCell>
-                                    <Table.HeaderCell textAlign={"right"}>
-                                        <Button basic color={"red"} onClick={() => {
-                                            handleEmployerDetailClick(employer.id)
-                                        }}>Company Detail</Button>
-                                    </Table.HeaderCell>
+                                    <Table.Row>
+                                        <Table.HeaderCell>
+                                            <Header>
+                                                {employer.companyName}
+                                            </Header>
+                                        </Table.HeaderCell>
+                                        <Table.HeaderCell textAlign={"right"}>
+                                            <Button basic color={"red"} onClick={() => {
+                                                handleEmployerDetailClick(employer.id)
+                                            }}>Company Detail</Button>
+                                        </Table.HeaderCell>
+                                    </Table.Row>
                                 </Table.Header>
 
                                 <Table.Body>

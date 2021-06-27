@@ -1,4 +1,4 @@
-import React, {useEffect, useState, Component} from "react";
+import React, {useEffect, useState} from "react";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {
@@ -14,34 +14,19 @@ const colors = ['red', 'orange', 'yellow', 'olive', 'green',
 
 let color = colors[Math.floor(Math.random() * 12)]
 
-class ProgressBar extends Component {
+export default function JobAdvertisementAdd() {
 
-    constructor(props) {
-        super(props);
-        this.increment = this.increment.bind(this);
-        this.state = {percent: 0};
-    }
+    const [progressBarState, setProgressBarState] = useState({percent: 0});
 
-    increment = () =>
-        this.setState((prevState) => ({
+    const increment = () =>
+        setProgressBarState((prevState) => ({
             percent: prevState.percent + 10 >= 100 ? 100 : prevState.percent + 10,
         }))
 
-    decrement = () =>
-        this.setState((prevState) => ({
+    const decrement = () =>
+        setProgressBarState((prevState) => ({
             percent: prevState.percent - 10 <= 0 ? 0 : prevState.percent - 10,
         }))
-
-    render() {
-        return (
-            <div>
-                <Progress percent={this.state.percent} indicating/>
-            </div>
-        )
-    }
-}
-
-export default function JobAdvertisementAdd() {
 
     let jobAdvertisementService = new JobAdvertisementService();
     const JobAdvertisementAddSchema = Yup.object().shape({
@@ -65,8 +50,8 @@ export default function JobAdvertisementAdd() {
         validationSchema: JobAdvertisementAddSchema,
         onSubmit: (values) => {
             values.employerId = 7;
-            formik.values.position = {id :formik.values.positionId}
-            formik.values.city = {id :formik.values.cityId}
+            formik.values.position = {id: formik.values.positionId}
+            formik.values.city = {id: formik.values.cityId}
             jobAdvertisementService.add(values).then((result) => console.log(result.data.data));
             if (new Date(values.applicationDeadline).getTime() < new Date().getTime()) alert("Application deadline should be a date in the future");
             else alert("Advertisement has been published");
@@ -116,8 +101,8 @@ export default function JobAdvertisementAdd() {
 
     return (
         <div>
-            <ProgressBar/>
-            <Segment disabled inverted color={color} basic  size={"big"} textAlign={"center"}>Post Job</Segment>
+            <Progress percent={progressBarState.percent} indicating />
+            <Segment disabled inverted color={color} basic size={"big"} textAlign={"center"}>Post Job</Segment>
             <Card fluid color={color}>
                 <Card.Content>
                     <Form onSubmit={formik.handleSubmit}>
@@ -125,9 +110,10 @@ export default function JobAdvertisementAdd() {
                             <Grid stackable>
                                 <GridColumn width={4}>
                                     <Dropdown clearable item placeholder="Select a position" search selection
-                                              onChange={(event, data) =>
+                                              onChange={(event, data) => {
                                                   handleChangeSemantic("positionId", data.value)
-                                              }
+                                                  increment()
+                                              }}
                                               onBlur={formik.handleBlur} id="id"
                                               value={formik.values.positionId} options={positionOption}
                                     />
@@ -139,9 +125,10 @@ export default function JobAdvertisementAdd() {
                                 </GridColumn>
                                 <GridColumn width={4}>
                                     <Dropdown clearable item placeholder="Select a city" search selection
-                                              onChange={(event, data) =>
+                                              onChange={(event, data) => {
                                                   handleChangeSemantic("cityId", data.value)
-                                              }
+                                                  increment()
+                                              }}
                                               onBlur={formik.handleBlur} id="id" value={formik.values.cityId}
                                               options={cityOption}
                                     />
@@ -153,9 +140,10 @@ export default function JobAdvertisementAdd() {
                                 </GridColumn>
                                 <GridColumn width={4}>
                                     <Dropdown clearable item placeholder="Enter Work Model" search selection
-                                              onChange={(event, data) =>
+                                              onChange={(event, data) => {
                                                   handleChangeSemantic("workModel", data.value)
-                                              }
+                                                  increment()
+                                              }}
                                               onBlur={formik.handleBlur} id="workModel"
                                               value={formik.values.workModel} options={workModalOption}
                                     />
@@ -167,11 +155,12 @@ export default function JobAdvertisementAdd() {
                                 </GridColumn>
                                 <GridColumn width={4}>
                                     <Dropdown clearable item placeholder="Enter Work Time" search selection
-                                              onChange={(event, data) =>
-                                                  handleChangeSemantic("workTime", data.value)
-                                              }
-                                              onBlur={formik.handleBlur} id="workTime"
+                                              onBlur={formik.handleBlur} id="workTime" openOnFocus
                                               value={formik.values.workTime} options={workTimeOption}
+                                              onChange={(event, data) => {
+                                                  handleChangeSemantic("workTime", data.value)
+                                                  increment()
+                                              }}
                                     />
                                     {formik.errors.workTime && formik.touched.workTime && (
                                         <div className={"ui pointing red basic label"}>{formik.errors.workTime}</div>
@@ -185,7 +174,9 @@ export default function JobAdvertisementAdd() {
                                     <Input style={{width: "89%"}}
                                            id="numberOfPeopleToBeHired" name="numberOfPeopleToBeHired"
                                            error={Boolean(formik.errors.numberOfPeopleToBeHired)}
-                                           onChange={formik.handleChange} value={formik.values.numberOfPeopleToBeHired}
+                                           onChange={(event, data) => {
+                                               handleChangeSemantic("numberOfPeopleToBeHired", data.value)
+                                           }} value={formik.values.numberOfPeopleToBeHired}
                                            onBlur={formik.handleBlur} type="number"
                                            placeholder="Enter the number of people to be hired"
                                     />
@@ -202,10 +193,11 @@ export default function JobAdvertisementAdd() {
                                         placeholder="Enter Minimum Salary"
                                         value={formik.values.minSalary}
                                         name="minSalary"
-                                        onChange={formik.handleChange}
+                                        onChange={(event, data) => {
+                                            handleChangeSemantic("minSalary", data.value)
+                                        }}
                                         onBlur={formik.handleBlur}
-                                    >
-                                    </Input>
+                                    />
                                     {formik.errors.minSalary && formik.touched.minSalary && (
                                         <div className={"ui pointing red basic label"}>
                                             {formik.errors.minSalary}
@@ -221,8 +213,7 @@ export default function JobAdvertisementAdd() {
                                         name="maxSalary"
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
-                                    >
-                                    </Input>
+                                    />
                                     {formik.errors.maxSalary && formik.touched.maxSalary && (
                                         <div className={"ui pointing red basic label"}>
                                             {formik.errors.maxSalary}

@@ -1,9 +1,10 @@
 import React from "react";
-import { Container, Grid, Header, Icon, List, Segment, } from "semantic-ui-react";
+import {Container, Grid, Header, Icon, List, Segment,} from "semantic-ui-react";
+
 export default function Footer() {
     return (
         <div className={"Footer"}>
-            <Segment inverted vertical style={{ padding: "5em 0em" }}>
+            <Segment inverted vertical style={{padding: "5em 0em"}}>
                 <Container>
                     <Grid divided inverted stackable>
                         <Grid.Row>
@@ -18,7 +19,7 @@ export default function Footer() {
                             <Grid.Column width={5}>
                                 <div className="descriptionPosition">
                                     <Header as="h2">
-                                        <Icon name="users" color="blue" size = "big"/>
+                                        <Icon name="users" color="blue" size="big"/>
                                         <Header.Content>
                                             <font color="#f5f5f5">
                                                 Human Resources Management System

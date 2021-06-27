@@ -14,11 +14,11 @@ export default function Navi() {
         setIsAuthenticated(false)
     }
 
-    function handleSignIn(){
+    function handleSignIn() {
         setIsAuthenticated(true)
     }
 
-    function handleIsEmployer(isEmployer){
+    function handleIsEmployer(isEmployer) {
         setIsEmployer(isEmployer)
     }
 
@@ -36,7 +36,7 @@ export default function Navi() {
                     <Menu.Item name="Users" as={Link} to={"/users"}>Users</Menu.Item>
 
                     {isAuthenticated ?
-                        <SignedIn signOut = {handleSignOut} isEmployer={handleIsEmployer}/> :
+                        <SignedIn signOut={handleSignOut} isEmployer={handleIsEmployer}/> :
                         <SignedOut login={handleSignIn} isEmployer={handleIsEmployer}/>}
 
                 </Container>
