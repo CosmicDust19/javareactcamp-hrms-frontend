@@ -1,13 +1,10 @@
 import React from "react";
 import EmployerService from "../services/employerService";
-import {Button, Icon, Table, Card, Header} from "semantic-ui-react";
+import {Icon, Table, Card, Header} from "semantic-ui-react";
 import {useState, useEffect} from "react";
 import {useHistory} from "react-router-dom";
 
 export default function EmployerList() {
-
-    const colors = ['red', 'orange', 'yellow', 'olive', 'green',
-        'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey']
 
     const [employers, setEmployer] = useState([]);
 
@@ -26,7 +23,9 @@ export default function EmployerList() {
         <div>
             <Card.Group itemsPerRow={2} stackable>
                 {employers.map((employer) => (
-                    <Card color={colors[Math.floor(Math.random() * 12)]} key={employer.id}>
+                    <Card key={employer.id} onClick={() => {
+                        handleEmployerDetailClick(employer.id)
+                    }}>
                             <Table celled>
                                 <Table.Header>
                                     <Table.Row>
@@ -36,9 +35,6 @@ export default function EmployerList() {
                                             </Header>
                                         </Table.HeaderCell>
                                         <Table.HeaderCell textAlign={"right"}>
-                                            <Button basic color={"red"} onClick={() => {
-                                                handleEmployerDetailClick(employer.id)
-                                            }}>Company Detail</Button>
                                         </Table.HeaderCell>
                                     </Table.Row>
                                 </Table.Header>

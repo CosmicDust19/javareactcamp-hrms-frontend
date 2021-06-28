@@ -1,13 +1,34 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useHistory} from "react-router-dom";
 import * as Yup from "yup";
 import {Button, Form, Grid, Header, Icon, Message, Segment, Popup, Input} from "semantic-ui-react";
 import CandidateService from "../services/candidateService";
 import EmployerService from "../services/employerService";
 import SystemEmployeeService from "../services/systemEmployeeService";
+import UserService from "../services/userService";
 import {useFormik} from "formik";
+import {useDispatch} from "react-redux";
+import {login} from "../store/actions/userActions";
+import {toast} from "react-toastify";
+
+const userService = new UserService()
+const candidateService = new CandidateService()
+const employerService = new EmployerService()
+const systemEmployeeService = new SystemEmployeeService()
+
+const errorPopUpStyle = {
+    borderRadius: 0,
+    opacity: 0.7,
+    color: "rgb(201,201,201)"
+}
 
 export function CandidateSignUp() {
+
+    const dispatch = useDispatch();
+
+    const handleLogin = (user) => {
+        dispatch(login(user, "candidate"))
+    }
 
     let timeout;
 
@@ -96,21 +117,13 @@ export function CandidateSignUp() {
         clearTimeout(timeout)
     }
 
-    const errorPopUpStyle = {
-        borderRadius: 0,
-        opacity: 0.7,
-        color: "rgb(201,201,201)"
-    }
-
-    let candidateService = new CandidateService();
-
     const candidateSignUpSchema = Yup.object().shape({
         firstName: Yup.string().required("required").min(2, "too short").max(50, "too long"),
         lastName: Yup.string().required("required").min(2, "too short").max(50, "too long"),
         email: Yup.string().required("required").matches(/\w+(\.\w+)*@[a-zA-Z]+(\.\w{2,6})+/, "not a valid e-mail format"),
         password: Yup.string().required("required").min(6, "min 6 characters"),
         passwordRepeat: Yup.string().oneOf([Yup.ref("password"), null], "not matching").required("required"),
-        nationalityId: Yup.string().required("required").matches(/\d{11}/, "not a valid nationality id"),
+        nationalityId: Yup.string().required("required").matches(/\d{11}/, "not a valid nationality id").max(11, "not a valid nationality id"),
         birthYear: Yup.number().required("required").min(1900, "enter your real birth year").max(2030, "enter your real birth year"),
     });
 
@@ -123,11 +136,38 @@ export function CandidateSignUp() {
         },
         validationSchema: candidateSignUpSchema,
         onSubmit: (values) => {
-            console.log(values)
-            candidateService.add(values).then((result) => console.log(result.data.data))
-            history.push("/login")
+            let counter = 0
+            if (isEmailInUse) {
+                toast.warning("This email in use!")
+                counter++
+            }
+            if (isNationalityIdInUse) {
+                toast.warning("This nationality id in use!")
+                counter++
+            }
+            if (counter === 0){
+                candidateService.add(values).then((result) => console.log(result.data.data))
+                toast("Welcome")
+                let candidate = {...values}
+                candidate.password = null
+                candidate.passwordRepeat = null
+                handleLogin(candidate)
+                history.push("/")
+            }
         }
     });
+
+    const [isEmailInUse, setIsEmailInUse] = useState([]);
+
+    useEffect(() => {
+        userService.existsByEmail(formik.values.email).then((result) => setIsEmailInUse(result.data.data));
+    }, [formik.values.email]);
+
+    const [isNationalityIdInUse, setIsNationalityIdInUse] = useState([]);
+
+    useEffect(() => {
+        candidateService.existsByNationalityId(formik.values.nationalityId).then((result) => setIsNationalityIdInUse(result.data.data));
+    }, [formik.values.nationalityId]);
 
     const handleChangeSemantic = (fieldName, value) => {
         formik.setFieldValue(fieldName, value);
@@ -151,7 +191,7 @@ export function CandidateSignUp() {
             <Grid centered stackable padded>
                 <Grid.Column width={6}>
                     <Segment placeholder color={"purple"} padded textAlign={"center"}>
-                        <Form size="large" onSubmit={formik.handleSubmit} inverted>
+                        <Form  size="large" onSubmit={formik.handleSubmit} inverted>
 
                             <Grid padded>
                                 <Grid.Column>
@@ -336,6 +376,12 @@ export function CandidateSignUp() {
 
 export function EmployerSignUp() {
 
+    const dispatch = useDispatch();
+
+    const handleLogin = (user) => {
+        dispatch(login(user, "employer"))
+    }
+
     let timeout;
 
     const [cNState, setCNState] = useState({isCNOpen: false})
@@ -411,14 +457,6 @@ export function EmployerSignUp() {
         clearTimeout(timeout)
     }
 
-    const errorPopUpStyle = {
-        borderRadius: 0,
-        opacity: 0.7,
-        color: "rgb(201,201,201)"
-    }
-
-    let employerService = new EmployerService();
-
     const employerSignUpSchema = Yup.object().shape({
         companyName: Yup.string().required("required").min(2, "too short").max(50, "too long"),
         email: Yup.string().required("required").matches(/\w+(\.\w+)*@[a-zA-Z]+(\.\w{2,6})+/, "not a valid e-mail format"),
@@ -437,16 +475,55 @@ export function EmployerSignUp() {
         },
         validationSchema: employerSignUpSchema,
         onSubmit: (values) => {
-            console.log(values)
-            if (!values.website.includes(values.email.substring(values.email.indexOf("@") + 1, values.email.length)))
-                alert("Your website and email are incompatible, They should have the same domain")
-            else {
+            let counter = 0
+            if (isEmailInUse) {
+                toast.warning("This email in use!")
+                counter++
+            }
+            if (isCompanyNameInUse) {
+                toast.warning("This company name in use!")
+                counter++
+            }
+            if (isWebsiteInUse) {
+                toast.warning("This website in use!")
+                counter++
+            }
+            if (!values.website.includes(values.email.substring(values.email.indexOf("@") + 1, values.email.length))) {
+                toast.warning("Your website and email are incompatible, They should have the same domain!", {
+                    autoClose: 5000,
+
+                })
+                counter++
+            }
+            if(counter === 0 ){
                 employerService.add(values).then((result) => console.log(result.data.data))
-                alert("Successful")
-                history.push("/login")
+                toast("Welcome")
+                let employer = {...values}
+                employer.password = null
+                employer.passwordRepeat = null
+                handleLogin(employer)
+                history.push("/")
             }
         }
     });
+
+    const [isEmailInUse, setIsEmailInUse] = useState([]);
+
+    useEffect(() => {
+        userService.existsByEmail(formik.values.email).then((result) => setIsEmailInUse(result.data.data));
+    }, [formik.values.email]);
+
+    const [isCompanyNameInUse, setIsCompanyNameInUse] = useState([]);
+
+    useEffect(() => {
+        employerService.existsByCompanyName(formik.values.companyName).then((result) => setIsCompanyNameInUse(result.data.data));
+    }, [formik.values.companyName]);
+
+    const [isWebsiteInUse, setIsWebsiteInUse] = useState([]);
+
+    useEffect(() => {
+        employerService.existsByWebsite(formik.values.website).then((result) => setIsWebsiteInUse(result.data.data));
+    }, [formik.values.website]);
 
     const handleChangeSemantic = (fieldName, value) => {
         formik.setFieldValue(fieldName, value);
@@ -633,6 +710,12 @@ export function EmployerSignUp() {
 
 export function SystemEmployeeSignUp() {
 
+    const dispatch = useDispatch();
+
+    const handleLogin = (user) => {
+        dispatch(login(user, "systemEmployee"))
+    }
+
     let timeout;
 
     const [fNState, setFNState] = useState({isFNOpen: false})
@@ -696,14 +779,6 @@ export function SystemEmployeeSignUp() {
         clearTimeout(timeout)
     }
 
-    const errorPopUpStyle = {
-        borderRadius: 0,
-        opacity: 0.7,
-        color: "rgb(201,201,201)"
-    }
-
-    let systemEmployeeService = new SystemEmployeeService();
-
     const systemEmployeeValidationSchema = Yup.object().shape({
         firstName: Yup.string().required("required").min(2, "too short").max(50, "too long"),
         lastName: Yup.string().required("required").min(2, "too short").max(50, "too long"),
@@ -721,11 +796,25 @@ export function SystemEmployeeSignUp() {
         },
         validationSchema: systemEmployeeValidationSchema,
         onSubmit: (values) => {
-            console.log(values)
-            systemEmployeeService.add(values).then((result) => console.log(result.data.data))
-            history.push("/login")
+            if(isEmailInUse){
+                toast.warning("This email in use!")
+            } else {
+                systemEmployeeService.add(values).then((result) => console.log(result.data.data))
+                toast("Welcome")
+                let systemEmployee = {...values}
+                systemEmployee.password = null
+                systemEmployee.passwordRepeat = null
+                handleLogin(systemEmployee)
+                history.push("/")
+            }
         }
     });
+
+    const [isEmailInUse, setIsEmailInUse] = useState([]);
+
+    useEffect(() => {
+        userService.existsByEmail(formik.values.email).then((result) => setIsEmailInUse(result.data.data));
+    }, [formik.values.email]);
 
     const handleChangeSemantic = (fieldName, value) => {
         formik.setFieldValue(fieldName, value);
@@ -764,7 +853,7 @@ export function SystemEmployeeSignUp() {
                                             formik.errors.firstName :
                                             <Icon name="checkmark"/>}
                                         style={errorPopUpStyle} on='click' open={fNState.isCNOpen}
-                                        onClose={handleFNClose} onOpen={handleFNOpen} position='top left' inverted
+                                        onClose={handleFNClose} onOpen={handleFNOpen} position='right center' inverted
                                     />}
                                 </Grid.Column>
                             </Grid>
@@ -784,7 +873,7 @@ export function SystemEmployeeSignUp() {
                                             formik.errors.lastName :
                                             <Icon name="checkmark"/>}
                                         style={errorPopUpStyle} on='click' open={lNState.isLNOpen}
-                                        onClose={handleLNClose} onOpen={handleLNOpen} position='top left' inverted
+                                        onClose={handleLNClose} onOpen={handleLNOpen} position='right center' inverted
                                     />}
                                 </Grid.Column>
                             </Grid>
@@ -803,7 +892,7 @@ export function SystemEmployeeSignUp() {
                                             formik.errors.email :
                                             <Icon name="checkmark"/>}
                                         style={errorPopUpStyle} on='click' open={eMState.isEMOpen}
-                                        onClose={handleEMClose} onOpen={handleEMOpen} position='top left' inverted
+                                        onClose={handleEMClose} onOpen={handleEMOpen} position='right center' inverted
                                     />}
                                 </Grid.Column>
                             </Grid>
@@ -823,7 +912,7 @@ export function SystemEmployeeSignUp() {
                                             formik.errors.password :
                                             <Icon name="checkmark"/>}
                                         style={errorPopUpStyle} on='click' open={pWState.isPWOpen}
-                                        onClose={handlePWClose} onOpen={handlePWOpen} position='top left' inverted
+                                        onClose={handlePWClose} onOpen={handlePWOpen} position='right center' inverted
                                     />}
                                 </Grid.Column>
                             </Grid>
@@ -843,16 +932,16 @@ export function SystemEmployeeSignUp() {
                                             formik.errors.passwordRepeat :
                                             <Icon name="checkmark"/>}
                                         style={errorPopUpStyle} on='click' open={pWRState.isPWROpen}
-                                        onClose={handlePWRClose} onOpen={handlePWROpen} position='top left' inverted
+                                        onClose={handlePWRClose} onOpen={handlePWROpen} position='right center' inverted
                                     />}
                                 </Grid.Column>
                             </Grid>
 
                             <Segment textAlign="center" basic>
                                 <Button animated="fade" type="submit" size="big" color="purple"
-                                onClick={() => {
-                                    triggerAllErrorPopUps()
-                                }}>
+                                        onClick={() => {
+                                            triggerAllErrorPopUps()
+                                        }}>
                                     <Button.Content hidden><Icon name='signup'/></Button.Content>
                                     <Button.Content visible>Sign Up</Button.Content>
                                 </Button>

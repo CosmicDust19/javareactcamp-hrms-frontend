@@ -6,6 +6,10 @@ export default class CandidateService {
         return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/candidates/existsByEmailAndPassword?email=" + email + "&password=" + password)
     }
 
+    existsByNationalityId(nationalityId){
+        return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/candidates/existsByNationalityId?nationalityId=" + nationalityId)
+    }
+
     getCandidates() {
         return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/candidates/getAll")
     }

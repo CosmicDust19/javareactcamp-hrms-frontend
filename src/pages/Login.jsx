@@ -8,13 +8,14 @@ import CandidateService from "../services/candidateService";
 import SystemEmployeeService from "../services/systemEmployeeService";
 import * as Yup from "yup";
 import {useFormik} from "formik";
+import {toast} from "react-toastify";
 
 export default function Login() {
 
     const dispatch = useDispatch();
 
-    const handleLogin = (user) => {
-        dispatch(login(user))
+    const handleLogin = (user, userType) => {
+        dispatch(login(user, userType))
     }
 
     let timeout;
@@ -47,7 +48,7 @@ export default function Login() {
     const errorPopUpStyle = {
         borderRadius: 0,
         opacity: 0.7,
-        color: "rgb(160,155,155)"
+        color: "rgb(201,201,201)"
     }
 
     const loginValidationSchema = Yup.object().shape({
@@ -63,26 +64,28 @@ export default function Login() {
         },
         validationSchema: loginValidationSchema,
         onSubmit: (values) => {
-            
-            if (values.password.length < 6){
-                alert("Please check your email and password.")
+
+            if (values.password.length < 6) {
+                toast.warning("Please check your email and password")
+                return
             }
 
-            console.log(candidate)
-            console.log(employer)
-            console.log(systemEmployee)
-
-            if (candidate) {
-                handleLogin(candidate)
+            if (candidate !== undefined && candidate !== {} && candidate !== null) {
+                handleLogin(candidate, "candidate")
                 history.push("/")
-            } else if (employer) {
-                handleLogin(employer)
-                history.push("/users")
-            } else if (systemEmployee) {
-                handleLogin(systemEmployee)
+            } else if (employer && employer !== {} && employer !== null) {
+                handleLogin(employer, "employer")
                 history.push("/")
-            } else alert("Please check your email and password.")
-
+            } else if (systemEmployee && systemEmployee !== {} && systemEmployee !== null) {
+                handleLogin(systemEmployee, "systemEmployee")
+                history.push("/")
+            } else {
+                toast.warning("Please check your email and password")
+                return
+            }
+            toast("Welcome", {
+                autoClose: 1500
+            })
         }
     });
 
@@ -177,7 +180,9 @@ export default function Login() {
                 <Grid.Column width={9}>
                     <Message attached='bottom' warning>
                         <Icon name='help'/>
-                        Don't you signed up yet ?&nbsp;<Link to={"/candidateSignUp"}>Click Here</Link>&nbsp;to sign up.
+                        Don't you signed up yet ? Sign up as a&nbsp;
+                        <Link to={"/candidateSignUp"}>candidate</Link>&nbsp;or&nbsp;
+                        <Link to={"/employerSignUp"}>employer</Link>.
                     </Message>
                 </Grid.Column>
             </Grid>

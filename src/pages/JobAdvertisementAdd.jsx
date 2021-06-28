@@ -8,6 +8,8 @@ import {
 import CityService from "../services/cityService";
 import PositionService from "../services/positionService";
 import JobAdvertisementService from "../services/jobAdvertisementService";
+import {useSelector} from "react-redux";
+import {toast} from "react-toastify";
 
 const colors = ['red', 'orange', 'yellow', 'olive', 'green',
     'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey']
@@ -15,6 +17,8 @@ const colors = ['red', 'orange', 'yellow', 'olive', 'green',
 let color = colors[Math.floor(Math.random() * 12)]
 
 export default function JobAdvertisementAdd() {
+
+    const userProps = useSelector(state => state?.user?.userProps)
 
     const [progressBarState, setProgressBarState] = useState({percent: 0});
 
@@ -49,12 +53,17 @@ export default function JobAdvertisementAdd() {
         },
         validationSchema: JobAdvertisementAddSchema,
         onSubmit: (values) => {
-            values.employerId = 7;
+            values.employerId = userProps.user?.id;
             formik.values.position = {id: formik.values.positionId}
             formik.values.city = {id: formik.values.cityId}
+            if (new Date(values.applicationDeadline).getTime() < new Date().getTime()) {
+                toast.warning("Application deadline should be a date in the future")
+                return
+            }
             jobAdvertisementService.add(values).then((result) => console.log(result.data.data));
-            if (new Date(values.applicationDeadline).getTime() < new Date().getTime()) alert("Application deadline should be a date in the future");
-            else alert("Advertisement has been published");
+            toast("Published 🎉", {
+                autoClose: 2500
+            })
         },
     });
 
@@ -192,6 +201,7 @@ export default function JobAdvertisementAdd() {
                                         type="number"
                                         placeholder="Enter Minimum Salary"
                                         value={formik.values.minSalary}
+                                        error={Boolean(formik.errors.minSalary)}
                                         name="minSalary"
                                         onChange={(event, data) => {
                                             handleChangeSemantic("minSalary", data.value)
@@ -210,6 +220,7 @@ export default function JobAdvertisementAdd() {
                                         type="number"
                                         placeholder="Enter Maximum Salary"
                                         value={formik.values.maxSalary}
+                                        error={Boolean(formik.errors.maxSalary)}
                                         name="maxSalary"
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
@@ -229,7 +240,6 @@ export default function JobAdvertisementAdd() {
                                     <TextArea
                                         placeholder="Enter Job Description"
                                         style={{minHeight: 300, maxWidth: 762}}
-                                        error={Boolean(formik.errors.jobDescription).toString()}
                                         value={formik.values.jobDescription}
                                         name="jobDescription"
                                         onChange={formik.handleChange}
@@ -245,7 +255,7 @@ export default function JobAdvertisementAdd() {
                                     <label style={{fontWeight: "bold"}}>Application Deadline</label>
                                     <Input
                                         style={{width: "78%"}} type="date"
-                                        error={Boolean(formik.errors.applicationDeadline).toString()}
+                                        error={Boolean(formik.errors.applicationDeadline)}
                                         onChange={(event, data) =>
                                             handleChangeSemantic("applicationDeadline", data.value)
                                         }

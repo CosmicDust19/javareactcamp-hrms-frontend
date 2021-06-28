@@ -1,10 +1,10 @@
 export const LOGIN = "LOGIN"
 export const SIGN_OUT = "SIGN_OUT"
 
-export function login(user) {
+export function login(user, userType) {
     return {
         type: LOGIN,
-        payload: user
+        payload: {user, userType}
     }
 }
 

@@ -251,16 +251,20 @@ export default function CandidateDetail() {
                     <Table basic={"very"} textAlign="right">
                         <Table.Body>
                             <Table.Row>
-                                Created at
-                                {` ${new Date(selectedCv?.createdAt).getDate()} 
+                                <Table.Cell>
+                                    Created at
+                                    {` ${new Date(selectedCv?.createdAt).getDate()} 
                                     ${months[new Date(selectedCv?.createdAt).getMonth()]} 
                                     ${new Date(selectedCv?.createdAt).getFullYear()} `}
+                                </Table.Cell>
                             </Table.Row>
                             <Table.Row>
-                                Last modified at
-                                {` ${new Date(selectedCv?.lastModifiedAt).getDate()} 
+                                <Table.Cell>
+                                    Last modified at
+                                    {` ${new Date(selectedCv?.lastModifiedAt).getDate()} 
                                     ${months[new Date(selectedCv?.lastModifiedAt).getMonth()]} 
                                     ${new Date(selectedCv?.lastModifiedAt).getFullYear()}`}
+                                </Table.Cell>
                             </Table.Row>
                         </Table.Body>
                     </Table>

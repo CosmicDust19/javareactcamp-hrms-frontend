@@ -5,6 +5,14 @@ export default class EmployerService {
         return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/existsByEmailAndPassword?email=" + email + "&password=" + password)
     }
 
+    existsByCompanyName(companyName){
+        return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/existsByCompanyName?companyName=" + companyName)
+    }
+
+    existsByWebsite(website){
+        return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/existsByWebsite?website=" + website)
+    }
+
     getEmployers(){
         return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/getAll");
     }
