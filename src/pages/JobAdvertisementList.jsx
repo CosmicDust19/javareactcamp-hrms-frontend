@@ -480,7 +480,7 @@ export default function JobAdvertisementList() {
         return (
             <Popup
                 trigger={
-                    <Menu secondary  vertical pagination style={{marginLeft: "-7em"}}>
+                    <Menu secondary icon={"labeled"}  vertical pagination style={{marginLeft: "-1em"}}>
                         <Menu.Item name='5' active={jobAdvertisementsPerPage === 5}
                                    disabled={filteredJobAdvertisements.length === 0}
                                    onClick={() => handlePagePerJobAdvMenuClick(5)}>5</Menu.Item>
