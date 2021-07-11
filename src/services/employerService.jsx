@@ -13,8 +13,12 @@ export default class EmployerService {
         return axios.get(`https://javareactcamp-hrms-backend.herokuapp.com/api/employers/existsByWebsite?website=${website}`)
     }
 
-    getEmployers(){
+    getAllEmployers(){
         return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/getAll");
+    }
+
+    getEmployers(){
+        return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/getPublicEmployers");
     }
 
     getById(id){
@@ -28,4 +32,9 @@ export default class EmployerService {
     add(values){
         return axios.post("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/add",values)
     }
+
+    updateSystemVerificationStatus(id, status){
+        return axios.put(`https://javareactcamp-hrms-backend.herokuapp.com/api/employers/updateSystemVerificationStatus?id=${id}&systemVerificationStatus=${status}`)
+    }
+
 }
