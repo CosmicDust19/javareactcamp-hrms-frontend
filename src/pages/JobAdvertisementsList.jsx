@@ -59,7 +59,7 @@ export default function JobAdvertisementsList() {
         });
     }, []);
 
-    if (isFirstVisit) {
+    if (filteredJobAdvertisements.length === 0 && isFirstVisit) {
         const _ = require('lodash');
         if (_.isEqual(filters, filter.jobAdvertsFilters)) filteredJobAdvertisements = jobAdvertisements
     }
