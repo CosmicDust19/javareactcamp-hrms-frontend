@@ -1,43 +1,32 @@
-export const CHANGE_JOB_ADVERTS_FILTERS = "CHANGE_FILTER"
-export const CHANGE_FILTERED_JOB_ADVS = "CHANGE_FILTERED_JOB_ADVS"
-export const CHANGE_JOB_ADVERT = "CHANGE_JOB_ADVERT"
-export const CHANGE_JOB_ADV_VERIFICATION = "CHANGE_JOB_ADV_VERIFICATION"
-export const FILTER_JOB_ADVS = "FILTER_JOB_ADVS"
-export const CHANGE_EMPLOYERS_FILTERS = "CHANGE_EMPLOYERS_FILTERS"
-export const CHANGE_FILTERED_EMPLOYERS = "CHANGE_FILTERED_EMPLOYERS"
-export const CHANGE_EMPLOYER = "CHANGE_EMPLOYER"
-export const FILTER_EMPLOYERS = "FILTER_EMPLOYERS"
+import {toast} from "react-toastify";
 
-export function changeJobAdvertsFilters(jobAdvertsFilters) {
-    return {
-        type: CHANGE_JOB_ADVERTS_FILTERS,
-        payload: {jobAdvertsFilters: jobAdvertsFilters}
+export const errorPopupStyle = {
+    borderRadius: 7, color: "rgb(217,8,8)", backgroundColor: "rgba(255,255,255, 0.7)", marginTop: -1
+}
+
+export const infoPopupStyle = {...errorPopupStyle, color: "rgb(0,0,0)"}
+
+export const inputStyle = {marginTop: 10, marginBottom: 10, marginRight: 10, marginLeft: 10}
+
+export const dropdownStyle = {marginTop: 10, marginBottom: 10, marginRight: 10}
+
+export const handleCatch = (error) => {
+    const resp = error.response
+    console.log(error)
+    console.log(resp)
+    if (!resp.data) toast.error("An unknown error has occurred")
+    if (resp.data.data?.errors) {
+        Object.entries(resp.data.data.errors).forEach((prop) => toast.warning(String(prop[1])))
+        return
+    }
+    if (resp.data.message) {
+        toast.warning(resp.data.message)
     }
 }
 
-export function changeFilteredJobAdverts(filteredJobAdverts) {
-    return {
-        type: CHANGE_FILTERED_JOB_ADVS,
-        payload: {filteredJobAdverts}
-    }
-}
+export const getValueByFieldName = (object, fieldName) => Object.values(object)[Object.keys(object).indexOf(fieldName)]
 
-export function changeJobAdvert(jobAdvId, jobAdvert) {
-    return {
-        type: CHANGE_JOB_ADVERT,
-        payload: {jobAdvId, jobAdvert}
-    }
-}
-
-export function changeJobAdvVerification(jobAdvId, status) {
-    return {
-        type: CHANGE_JOB_ADV_VERIFICATION,
-        payload: {jobAdvId, status}
-    }
-}
-
-export function filterJobAdverts(jobAdverts, filters) {
-
+export const filterJobAdverts = (jobAdverts, filters) => {
     let filteredJobAdverts = [...jobAdverts]
     let temp
     if (filters.cityIds.length > 0) {
@@ -140,63 +129,5 @@ export function filterJobAdverts(jobAdverts, filters) {
             filteredJobAdverts = filteredJobAdverts.filter((jobAdvertisement) =>
                 new Date(jobAdvertisement.deadline).getTime() < new Date().getTime())
         }
-
-    return {
-        type: FILTER_JOB_ADVS,
-        payload: {filteredJobAdverts}
-    }
-}
-
-export function changeEmployersFilters(employersFilters) {
-    return {
-        type: CHANGE_EMPLOYERS_FILTERS,
-        payload: {employersFilters}
-    }
-}
-
-export function changeFilteredEmployers(filteredEmployers) {
-    return {
-        type: CHANGE_FILTERED_EMPLOYERS,
-        payload: {filteredEmployers}
-    }
-}
-
-export function changeEmployer(emplId, employer) {
-    return {
-        type: CHANGE_EMPLOYER,
-        payload: {emplId, employer}
-    }
-}
-
-export function filterEmployers(employers, filters) {
-
-    let filteredEmployers = [...employers]
-    if (filters.employerId > 0) {
-        const index = filteredEmployers.findIndex((employer) => employer.id === filters.employerId)
-        filteredEmployers = [filteredEmployers[index]]
-        return {
-            type: FILTER_EMPLOYERS,
-            payload: {filteredEmployers}
-        }
-    }
-    if (filters.pending && filters.pending.length > 0) {
-        if (filters.pending === "signUpApproval")
-            filteredEmployers = filteredEmployers.filter((employer) => employer.rejected === null && employer.verified === false)
-        else if (filters.pending === "updateApproval")
-            filteredEmployers = filteredEmployers.filter((employer) => employer.updateVerified === false)
-    }
-    if (filters.verification && filters.verification.length > 0) {
-        if (filters.verification === "verified") {
-            filteredEmployers = filteredEmployers.filter((employer) =>
-                employer.verified === true)
-        } else if (filters.verification === "rejected") {
-            filteredEmployers = filteredEmployers.filter((employer) =>
-                employer.rejected === true)
-        }
-    }
-
-    return {
-        type: FILTER_EMPLOYERS,
-        payload: {filteredEmployers}
-    }
+    return filteredJobAdverts
 }

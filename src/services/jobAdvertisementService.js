@@ -6,6 +6,10 @@ export default class JobAdvertisementService {
         return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/jobAdvertisements/get/all");
     }
 
+    getAllByEmployerId(employerId) {
+        return axios.get(`https://javareactcamp-hrms-backend.herokuapp.com/api/jobAdvertisements/get/byEmployer?employerId=${employerId}`);
+    }
+
     getPublic(sortDirection) {
         if (!sortDirection) return axios.get(`https://javareactcamp-hrms-backend.herokuapp.com/api/jobAdvertisements/get/public`);
         return axios.get(`https://javareactcamp-hrms-backend.herokuapp.com/api/jobAdvertisements/get/public?sortDirection=${sortDirection}`);
@@ -21,6 +25,10 @@ export default class JobAdvertisementService {
 
     add(values) {
         return axios.post("https://javareactcamp-hrms-backend.herokuapp.com/api/jobAdvertisements/add", values);
+    }
+
+    update(values) {
+        return axios.put("https://javareactcamp-hrms-backend.herokuapp.com/api/jobAdvertisements/update", values);
     }
 
     updatePosition(jobAdvId, positionId) {

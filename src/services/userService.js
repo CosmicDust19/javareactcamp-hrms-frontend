@@ -14,6 +14,10 @@ export default class UserService {
         return axios.delete(`https://javareactcamp-hrms-backend.herokuapp.com/api/users/delete/byId?userId=${userId}`)
     }
 
+    login(email, password) {
+        return axios.get(`https://javareactcamp-hrms-backend.herokuapp.com/api/users/login?email=${email}&password=${password}`)
+    }
+
     updateEmail(userId, email){
         return axios.put(`https://javareactcamp-hrms-backend.herokuapp.com/api/users/update/email?email=${email}&userId=${userId}`)
     }

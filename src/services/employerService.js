@@ -30,8 +30,8 @@ export default class EmployerService {
         return axios.post("https://javareactcamp-hrms-backend.herokuapp.com/api/employers/add", values)
     }
 
-    updateCompanyName(id, companyName) {
-        return axios.put(`https://javareactcamp-hrms-backend.herokuapp.com/api/employers/updateCompanyName?companyName=${companyName}&emplId=${id}`)
+    updateCompanyName(emplId, companyName) {
+        return axios.put(`https://javareactcamp-hrms-backend.herokuapp.com/api/employers/update/companyName?companyName=${companyName}&emplId=${emplId}`)
     }
 
     updateEmailAndWebsite(emplId, email, website) {
