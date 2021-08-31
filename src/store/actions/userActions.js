@@ -150,13 +150,6 @@ export function changeCvSkill(cvId, cvSkills) {
     }
 }
 
-export function changeCompName(companyName) {
-    return {
-        type: CHANGE_COMP_NAME,
-        payload: {companyName}
-    }
-}
-
 export function addCv(CV) {
     return {
         type: ADD_CV,

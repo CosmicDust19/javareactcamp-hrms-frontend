@@ -8,8 +8,7 @@ import {
 import {useFormik} from "formik";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    changeFilteredJobAdverts,
-    changeJobAdvert, changeJobAdvertsFilters, filterJobAdverts
+    changeFilteredJobAdverts, changeJobAdvert, changeJobAdvertsFilters
 } from "../../store/actions/filterActions"
 import CityService from "../../services/cityService";
 import PositionService from "../../services/positionService";
@@ -17,7 +16,7 @@ import EmployerService from "../../services/employerService";
 import {toast} from "react-toastify";
 import {useHistory} from "react-router-dom";
 import filter from "../../store/initialStates/filterInitial";
-import {handleCatch, inputStyle} from "../../utilities/Utils";
+import {filterJobAdverts, handleCatch, inputStyle} from "../../utilities/Utils";
 import SDropdown from "../../utilities/customFormControls/SDropdown";
 
 const jobAdvertisementService = new JobAdvertisementService();
@@ -169,13 +168,35 @@ export default function JobAdvertsManagement() {
         setJobAdvertisementsPerPage(number)
     }
 
-    const handleMenuClick = (activeItem, menuName) => {
+    const handlePendingMenuClick = (activeItem) => {
         if (activeItem === formik.values.pending) {
             formik.values.pending = ""
-            handleChangeFilter(menuName, "")
+            handleChangeFilter("pending", "")
         } else {
             formik.values.pending = activeItem
-            handleChangeFilter(menuName, activeItem)
+            handleChangeFilter("pending", activeItem)
+        }
+        dispatch(changeJobAdvertsFilters(formik.values))
+    }
+
+    const handleVerificationMenuClick = (activeItem) => {
+        if (activeItem === formik.values.verification) {
+            formik.values.verification = ""
+            handleChangeFilter("verification", "")
+        } else {
+            formik.values.verification = activeItem
+            handleChangeFilter("verification", activeItem)
+        }
+        dispatch(changeJobAdvertsFilters(formik.values))
+    }
+
+    const handleActivationMenuClick = (activeItem) => {
+        if (activeItem === formik.values.activation) {
+            formik.values.activation = ""
+            handleChangeFilter("activation", "")
+        } else {
+            formik.values.activation = activeItem
+            handleChangeFilter("activation", activeItem)
         }
         dispatch(changeJobAdvertsFilters(formik.values))
     }
@@ -281,13 +302,13 @@ export default function JobAdvertsManagement() {
                                 <Menu secondary stackable style={{borderRadius: 10}}>
                                     <Menu.Item
                                         active={filters.pending === "releaseApproval"} color={"blue"} style={{borderRadius: 10}}
-                                        onClick={() => handleMenuClick("releaseApproval", "pending")}>
+                                        onClick={() => handlePendingMenuClick("releaseApproval")}>
                                         <Icon name="bullhorn"/>Release Approval
                                     </Menu.Item>
                                     <Menu.Item
                                         active={filters.pending === "updateApproval"} color={"orange"}
                                         style={{borderRadius: 10}}
-                                        onClick={() => handleMenuClick("updateApproval", "pending")}>
+                                        onClick={() => handlePendingMenuClick("updateApproval")}>
                                         <Icon name="redo alternate"/>Update Approval
                                     </Menu.Item>
                                 </Menu>
@@ -299,12 +320,12 @@ export default function JobAdvertsManagement() {
                                 <Menu secondary stackable style={{borderRadius: 10}}>
                                     <Menu.Item
                                         active={filters.verification === "verified"} color={"green"} style={{borderRadius: 10}}
-                                        onClick={() => handleMenuClick("verified", "verification")}>
+                                        onClick={() => handleVerificationMenuClick("verified")}>
                                         <Icon name="check circle outline"/>Verified
                                     </Menu.Item>
                                     <Menu.Item
                                         active={filters.verification === "rejected"} color={"red"} style={{borderRadius: 10}}
-                                        onClick={() => handleMenuClick("rejected", "verification")}>
+                                        onClick={() => handleVerificationMenuClick("rejected", "verification")}>
                                         <Icon name="ban"/>Rejected
                                     </Menu.Item>
                                 </Menu>
@@ -316,17 +337,17 @@ export default function JobAdvertsManagement() {
                                 <Menu secondary stackable style={{borderRadius: 10}}>
                                     <Menu.Item
                                         active={formik.values.activation === "active"} color={"green"} style={{borderRadius: 10}}
-                                        onClick={() => handleMenuClick("active", "activation")}>
+                                        onClick={() => handleActivationMenuClick("active")}>
                                         <Icon name="checkmark"/>Active
                                     </Menu.Item>
                                     <Menu.Item
                                         active={formik.values.activation === "inactive"} color="brown" style={{borderRadius: 10}}
-                                        onClick={() => handleMenuClick("inactive", "activation")}>
+                                        onClick={() => handleActivationMenuClick("inactive")}>
                                         <Icon name="minus circle"/>Inactive
                                     </Menu.Item>
                                     <Menu.Item
                                         active={formik.values.activation === "expired"} color="purple" style={{borderRadius: 10}}
-                                        onClick={() => handleMenuClick("expired", "activation")}>
+                                        onClick={() => handleActivationMenuClick("expired")}>
                                         <Icon name="calendar times"/>Expired
                                     </Menu.Item>
                                 </Menu>

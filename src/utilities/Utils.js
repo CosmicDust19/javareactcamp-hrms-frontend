@@ -1,4 +1,5 @@
 import {toast} from "react-toastify";
+import {FILTER_EMPLOYERS} from "../store/actions/filterActions";
 
 export const errorPopupStyle = {
     borderRadius: 7, color: "rgb(217,8,8)", backgroundColor: "rgba(255,255,255, 0.7)", marginTop: -1
@@ -14,10 +15,13 @@ export const handleCatch = (error) => {
     const resp = error.response
     console.log(error)
     console.log(resp)
-    if (!resp.data) toast.error("An unknown error has occurred")
+    if (!resp || !resp.data) {
+        toast.error("An unknown error has occurred")
+        return;
+    }
     if (resp.data.data?.errors) {
         Object.entries(resp.data.data.errors).forEach((prop) => toast.warning(String(prop[1])))
-        return
+        return;
     }
     if (resp.data.message) {
         toast.warning(resp.data.message)
@@ -130,4 +134,32 @@ export const filterJobAdverts = (jobAdverts, filters) => {
                 new Date(jobAdvertisement.deadline).getTime() < new Date().getTime())
         }
     return filteredJobAdverts
+}
+
+export const filterEmployers = (employers, filters) => {
+    let filteredEmployers = [...employers]
+    if (filters.employerId > 0) {
+        const index = filteredEmployers.findIndex((employer) => employer.id === filters.employerId)
+        filteredEmployers = [filteredEmployers[index]]
+        return {
+            type: FILTER_EMPLOYERS,
+            payload: {filteredEmployers}
+        }
+    }
+    if (filters.pending && filters.pending.length > 0) {
+        if (filters.pending === "signUpApproval")
+            filteredEmployers = filteredEmployers.filter((employer) => employer.rejected === null && employer.verified === false)
+        else if (filters.pending === "updateApproval")
+            filteredEmployers = filteredEmployers.filter((employer) => employer.updateVerified === false)
+    }
+    if (filters.verification && filters.verification.length > 0) {
+        if (filters.verification === "verified") {
+            filteredEmployers = filteredEmployers.filter((employer) =>
+                employer.verified === true)
+        } else if (filters.verification === "rejected") {
+            filteredEmployers = filteredEmployers.filter((employer) =>
+                employer.rejected === true)
+        }
+    }
+    return filteredEmployers
 }

@@ -6,20 +6,22 @@ import {
 } from "semantic-ui-react";
 import {useFormik} from "formik";
 import {useDispatch, useSelector} from "react-redux";
-import {changeEmployer, changeEmployersFilters, filterEmployers} from "../../store/actions/filterActions"
+import {changeEmployer, changeEmployersFilters, changeFilteredEmployers} from "../../store/actions/filterActions"
 import EmployerService from "../../services/employerService";
 import {toast} from "react-toastify";
 import {useHistory} from "react-router-dom";
+import {filterEmployers, handleCatch} from "../../utilities/Utils";
 
 const employerService = new EmployerService();
 export default function EmployersManagement() {
 
     const dispatch = useDispatch();
     const filters = useSelector(state => state?.filter.filter.employersFilters)
-    const filteredEmployers = useSelector(state => state?.filter.filter.filteredEmployers)
     const history = useHistory();
     const userProps = useSelector(state => state?.user?.userProps)
+    const initialFilters = {pending: "", verification: "", employerId: 0}
 
+    const [filteredEmployers, setFilteredEmployers] = useState(useSelector(state => state?.filter.filter.filteredEmployers));
     const [infoPopUpOpen, setInfoPopUpOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -28,7 +30,7 @@ export default function EmployersManagement() {
     const [refresh, setRefresh] = useState(true);
 
     useEffect(() => {
-        let employerService = new EmployerService();
+        const employerService = new EmployerService();
         employerService.getAll().then((result) => setEmployers(result.data.data));
     }, []);
 
@@ -62,7 +64,10 @@ export default function EmployersManagement() {
         value: employer.id,
     }));
 
-    employerOption = employerCompanyNameOption.concat(employersPhoneOption).concat(employerEmailOption).concat(employersWebsiteOption)
+    employerOption = employerCompanyNameOption
+        .concat(employersPhoneOption)
+        .concat(employerEmailOption)
+        .concat(employersWebsiteOption)
 
     const formik = useFormik({
         initialValues: {
@@ -72,15 +77,9 @@ export default function EmployersManagement() {
         }
     });
 
-    const refreshPage = () => {
+    const refreshComp = () => {
         if (refresh === true) setRefresh(false);
         else setRefresh(true)
-    }
-
-    const handleCatch = (error) => {
-        toast.warning("A problem has occurred")
-        console.log(error.response)
-        refreshPage()
     }
 
     const getRowColor = (employer) => {
@@ -95,7 +94,7 @@ export default function EmployersManagement() {
         employerService.updateVerification(employer.id, status).then(r => {
             dispatch(changeEmployer(employer.id, r.data.data))
             toast("Successful")
-            refreshPage()
+            refreshComp()
         }).catch(handleCatch)
     }
 
@@ -103,7 +102,7 @@ export default function EmployersManagement() {
         employerService.applyChanges(employer.id).then(r => {
             dispatch(changeEmployer(employer.id, r.data.data))
             toast("Successful")
-            refreshPage()
+            refreshComp()
         }).catch(handleCatch)
     }
 
@@ -132,7 +131,6 @@ export default function EmployersManagement() {
         } else {
             formik.values.pending = activeItem
             handleChangeFilter("pending", activeItem)
-            if (activeItem === "updateApproval") toast("Update is not supported for now, it won't affect the filtering process")
         }
         dispatch(changeEmployersFilters(formik.values))
     }
@@ -151,18 +149,16 @@ export default function EmployersManagement() {
     const handlePaginationChange = (e, {activePage}) => setCurrentPage(activePage)
 
     const handleResetFilters = () => {
-        handleChangeFilter("pending", "")
-        handleChangeFilter("verification", "")
-        handleChangeFilter("employerId", 0)
-        formik.values = {
-            pending: "", verification: "", employerId: 0
-        }
+        formik.setValues(initialFilters)
+        formik.values = initialFilters
         handleFilter()
     }
 
     const handleFilter = () => {
         dispatch(changeEmployersFilters(formik.values))
-        dispatch(filterEmployers(employers, formik.values))
+        const filteredEmployers = filterEmployers(employers, formik.values)
+        dispatch(changeFilteredEmployers(filteredEmployers))
+        setFilteredEmployers(filteredEmployers)
         setCurrentPage(1)
     }
 
@@ -240,14 +236,12 @@ export default function EmployersManagement() {
                                     </Header.Content>
                                 </Header>
                                 <Menu secondary style={{borderRadius: 10}}>
-                                    <Menu.Item active={filters.pending === "signUpApproval"} color={"blue"}
-                                               style={{borderRadius: 10}} onClick={() => {
-                                        handlePendingMenuClick("signUpApproval")
-                                    }}><Icon name="add user"/>Sign Up Approval</Menu.Item>
-                                    <Menu.Item active={filters.pending === "updateApproval"} color={"orange"}
-                                               style={{borderRadius: 10}} onClick={() => {
-                                        handlePendingMenuClick("updateApproval")
-                                    }}><Icon name="redo alternate"/>Update Approval</Menu.Item>
+                                    <Menu.Item active={filters.pending === "signUpApproval"} color={"blue"} style={{borderRadius: 10}}
+                                               onClick={() => handlePendingMenuClick("signUpApproval")}>
+                                        <Icon name="add user"/>Sign Up Approval</Menu.Item>
+                                    <Menu.Item active={filters.pending === "updateApproval"} color={"orange"} style={{borderRadius: 10}}
+                                               onClick={() => handlePendingMenuClick("updateApproval")}>
+                                        <Icon name="redo alternate"/>Update Approval</Menu.Item>
                                 </Menu>
                             </Segment>
                         </Grid.Column>
@@ -259,14 +253,14 @@ export default function EmployersManagement() {
                                     </Header.Content>
                                 </Header>
                                 <Menu secondary style={{borderRadius: 10}}>
-                                    <Menu.Item active={filters.verification === "verified"} color={"green"}
-                                               style={{borderRadius: 10}} onClick={() => {
-                                        handleVerificationMenuClick("verified")
-                                    }}><Icon name="check circle outline"/>Verified</Menu.Item>
-                                    <Menu.Item active={filters.verification === "rejected"} color={"red"}
-                                               style={{borderRadius: 10}} onClick={() => {
-                                        handleVerificationMenuClick("rejected")
-                                    }}><Icon name="ban"/>Rejected</Menu.Item>
+                                    <Menu.Item active={filters.verification === "verified"} color={"green"} style={{borderRadius: 10}}
+                                               onClick={() => handleVerificationMenuClick("verified")}>
+                                        <Icon name="check circle outline"/>Verified
+                                    </Menu.Item>
+                                    <Menu.Item active={filters.verification === "rejected"} color={"red"} style={{borderRadius: 10}}
+                                               onClick={() => handleVerificationMenuClick("rejected", "verification")}>
+                                        <Icon name="ban"/>Rejected
+                                    </Menu.Item>
                                 </Menu>
                             </Segment>
                         </Grid.Column>
