@@ -27,7 +27,7 @@ export default class UserService {
     }
 
     updateProfileImgId(imgId, userId) {
-        return axios.put(`http://localhost:8080/api/users/update/profileImgId?${imgId ? `imgId=${imgId}&` : ""}userId=${userId}`)
+        return axios.put(`https://javareactcamp-hrms-backend.herokuapp.com/api/users/update/profileImgId?${imgId ? `imgId=${imgId}&` : ""}userId=${userId}`)
     }
 
 }
