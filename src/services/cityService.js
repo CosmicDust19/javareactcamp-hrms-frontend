@@ -2,11 +2,11 @@ import axios from "axios"
 
 export default class CityService {
 
-    getCities() {
+    getAll() {
         return axios.get("https://javareactcamp-hrms-backend.herokuapp.com/api/cities/get/all");
     }
 
-    addCity(cityName) {
+    add(cityName) {
         return axios.post(`https://javareactcamp-hrms-backend.herokuapp.com/api/cities/add?cityName=${cityName}`)
     }
 
