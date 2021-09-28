@@ -118,7 +118,11 @@ function CandSchoolsTable
 
     const tableData = candSchs
         .map(candSch => ({candSch: candSch}))
-        .sort((a, b) => a.candSch.graduationYear - b.candSch.graduationYear)
+        .sort((a, b) => {
+            if (!a.candSch.graduationYear) return -1
+            else if (!b.candSch.graduationYear) return 1
+            return b.candSch.graduationYear - a.candSch.graduationYear
+        })
 
     const renderBodyRow = ({candSch}, i) => ({
         key: i,

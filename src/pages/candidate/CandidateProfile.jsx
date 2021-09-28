@@ -42,7 +42,7 @@ export function CandidateProfile() {
     const noInfoMessage =
         <Message info compact as={Segment} style={{float: "left", marginLeft: 20}} raised>
             <Icon name={"wait"} size={"large"}/>
-            <font style={{verticalAlign: "middle"}}>No info has been entered.</font>
+            <font style={{verticalAlign: "middle"}}>No infos has been entered.</font>
         </Message>
 
     return (

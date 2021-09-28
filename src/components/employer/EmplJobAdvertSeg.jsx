@@ -31,6 +31,7 @@ export function EmplJobAdvertSeg({...props}) {
     const dispatch = useDispatch();
     const user = useSelector(state => state?.user?.userProps.user)
 
+    const [loading, setLoading] = useState(false);
     const [jobAdvert, setJobAdvert] = useState(props.jobAdvert);
     const [cities, setCities] = useState([]);
     const [positions, setPositions] = useState([]);
@@ -40,6 +41,12 @@ export function EmplJobAdvertSeg({...props}) {
         const positionService = new PositionService();
         cityService.getAll().then((result) => setCities(result.data.data));
         positionService.getAll().then((result) => setPositions(result.data.data));
+        return () => {
+            setLoading(undefined)
+            setJobAdvert(undefined)
+            setCities(undefined)
+            setPositions(undefined)
+        }
     }, []);
 
     useEffect(() => {
@@ -84,20 +91,22 @@ export function EmplJobAdvertSeg({...props}) {
     });
 
     const add = (values) => {
+        setLoading(true)
         jobAdvertisementService.add(values).then((result) => {
             user.jobAdvertisements.push(result.data.data)
             dispatch(changeEmplJobAdverts(user.jobAdvertisements))
             toast("Your advert received. It will be published after verification")
-        }).catch(handleCatch)
+        }).catch(handleCatch).finally(() => setLoading(false))
     }
 
     const update = (values) => {
+        setLoading(true)
         jobAdvertisementService.update(values).then((result) => {
             const jobAdverts = changePropInList(values.id, result.data.data, user.jobAdvertisements)
             dispatch(changeEmplJobAdverts(jobAdverts))
             setJobAdvert(result.data.data)
             toast("Your update request received. It will be visible after confirmation")
-        }).catch(handleCatch)
+        }).catch(handleCatch).finally(() => setLoading(false))
     }
 
     const formik = useFormik({
@@ -169,11 +178,13 @@ export function EmplJobAdvertSeg({...props}) {
                 <Grid padded>
                     <Grid.Column>
                         {adding ?
-                            <Button animated="fade" positive type="submit" compact floated={"left"} style={{borderRadius: 10}}>
+                            <Button animated="fade" positive type="submit" compact floated={"left"}
+                                    style={{borderRadius: 10}} loading={loading}>
                                 <Button.Content hidden><Icon name='checkmark'/></Button.Content>
                                 <Button.Content visible>Post <Icon name={"plus"}/></Button.Content>
                             </Button> :
-                            <Button animated="fade" primary type="submit" compact floated={"left"} style={{borderRadius: 10}}>
+                            <Button animated="fade" primary type="submit" compact floated={"left"}
+                                    style={{borderRadius: 10}} loading={loading}>
                                 <Button.Content hidden><Icon name='checkmark'/></Button.Content>
                                 <Button.Content visible>Save <Icon name='save'/></Button.Content>
                             </Button>

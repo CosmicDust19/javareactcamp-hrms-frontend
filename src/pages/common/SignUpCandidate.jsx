@@ -1,4 +1,4 @@
-import {SignUp} from "./SignUp";
+import {SignUp} from "../../components/common/SignUp";
 import CandidateService from "../../services/candidateService";
 import * as Yup from "yup";
 import SPopupInput from "../../utilities/customFormControls/SPopupInput";
@@ -17,11 +17,13 @@ export function SignUpCandidate() {
     const dispatch = useDispatch();
     const history = useHistory();
 
+    const [loading, setLoading] = useState(false);
     const [jiggle, setJiggle] = useState(true);
     const [verticalScreen, setVerticalScreen] = useState(window.innerWidth < window.innerHeight);
 
     useEffect(() => {
         return () => {
+            setLoading(undefined)
             setJiggle(undefined)
             setVerticalScreen(undefined)
         };
@@ -47,13 +49,15 @@ export function SignUpCandidate() {
         initialValues: initial,
         validationSchema: Yup.object().shape(shape),
         onSubmit: (values) => {
+            setLoading(true)
             candidateService.add(values)
                 .then((r) => {
-                    dispatch(login(r.data.data, "candidate"))
-                    toast("Welcome")
-                    history.push("/")
+                    dispatch(login(r.data.data, "candidate"));
+                    toast("Welcome");
+                    history.push("/");
                 })
                 .catch(handleCatch)
+                .finally(() => setLoading(false))
         }
     });
 
@@ -77,5 +81,6 @@ export function SignUpCandidate() {
                      popupsize={popupSize} iconposition={iconPosition} type={"password"} formik={formik} key={7} jiggle={jiggle}/>
     ]
 
-    return <SignUp service={candidateService} formik={formik} inputComponents={inputComponents} toggleJiggle={() => setJiggle(!jiggle)}/>
+    return <SignUp service={candidateService} formik={formik} inputComponents={inputComponents}
+                   toggleJiggle={() => setJiggle(!jiggle)} loading={loading}/>
 }

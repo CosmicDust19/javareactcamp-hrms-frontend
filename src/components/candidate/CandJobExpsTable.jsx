@@ -112,7 +112,11 @@ function CandJobExpsTable
 
     const tableData = candJobExps
         .map(candJobExp => ({candJobExp: candJobExp}))
-        .sort((a, b) => a.candJobExp.quitYear - b.candJobExp.quitYear)
+        .sort((a, b) => {
+            if (!a.candJobExp.quitYear) return -1
+            else if (!b.candJobExp.quitYear) return 1
+            return b.candJobExp.quitYear - a.candJobExp.quitYear
+        })
 
     // semantic takes the field value as the key. we guaranteed that they will be different by giving a unique key
     const renderBodyRow = ({candJobExp}, i) => ({

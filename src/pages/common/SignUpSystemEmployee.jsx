@@ -1,4 +1,4 @@
-import {SignUp} from "./SignUp";
+import {SignUp} from "../../components/common/SignUp";
 import SystemEmployeeService from "../../services/systemEmployeeService";
 import * as Yup from "yup";
 import {useDispatch} from "react-redux";
@@ -17,8 +17,17 @@ export function SignUpSystemEmployee() {
     const dispatch = useDispatch();
     const history = useHistory();
 
+    const [loading, setLoading] = useState(false);
     const [jiggle, setJiggle] = useState(true);
     const [verticalScreen, setVerticalScreen] = useState(window.innerWidth < window.innerHeight);
+
+    useEffect(() => {
+        return () => {
+            setLoading(undefined)
+            setJiggle(undefined)
+            setVerticalScreen(undefined)
+        };
+    }, []);
 
     useEffect(() => {
         setVerticalScreen(window.innerWidth < window.innerHeight)
@@ -38,13 +47,15 @@ export function SignUpSystemEmployee() {
         initialValues: initial,
         validationSchema: Yup.object().shape(shape),
         onSubmit: (values) => {
+            setLoading(true)
             sysEmplService.add(values)
                 .then((r) => {
-                    dispatch(login(r.data.data, "systemEmployee"))
-                    toast("Welcome")
-                    history.push("/")
+                    dispatch(login(r.data.data, "systemEmployee"));
+                    toast("Welcome");
+                    history.push("/");
                 })
                 .catch(handleCatch)
+                .finally(() => setLoading(false))
         }
     });
 
@@ -64,5 +75,6 @@ export function SignUpSystemEmployee() {
                      popupsize={popupSize} iconposition={iconPosition} type={"password"} formik={formik} key={5} jiggle={jiggle}/>
     ]
 
-    return <SignUp service={sysEmplService} formik={formik} inputComponents={inputComponents} toggleJiggle={() => setJiggle(!jiggle)}/>
+    return <SignUp service={sysEmplService} formik={formik} inputComponents={inputComponents}
+                   toggleJiggle={() => setJiggle(!jiggle)} loading={loading}/>
 }

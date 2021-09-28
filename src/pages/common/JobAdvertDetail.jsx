@@ -26,15 +26,13 @@ export default function JobAdvertDetail() {
     const [jobAdvert, setJobAdvert] = useState({});
 
     useEffect(() => {
-        setTimeout(() => setVisible(true), 50)
+        jobAdvertisementService.getById(id)
+            .then((result) => setJobAdvert(result.data.data))
+            .finally(() => setVisible(true));
         return () => {
             setVisible(undefined)
             setJobAdvert(undefined)
         };
-    }, []);
-
-    useEffect(() => {
-        jobAdvertisementService.getById(id).then((result) => setJobAdvert(result.data.data));
     }, [id]);
 
     const updateColor = "rgba(255,113,0,0.1)"
@@ -67,7 +65,7 @@ export default function JobAdvertDetail() {
         return <Loader active inline='centered' size={"large"} style={{marginTop: "15em"}}/>
 
     return (
-        <Transition visible={visible} duration={200}>
+        <Transition visible={visible} duration={300}>
             <div>
                 <Card raised fluid style={{borderRadius: 0, marginBottom: 0, backgroundColor: "rgba(0,0,0,0.02)"}}>
                     <Card.Content>

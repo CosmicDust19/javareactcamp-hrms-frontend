@@ -1,4 +1,4 @@
-import {SignUp} from "./SignUp";
+import {SignUp} from "../../components/common/SignUp";
 import EmployerService from "../../services/employerService";
 import * as Yup from "yup";
 import {useDispatch} from "react-redux";
@@ -17,11 +17,13 @@ export function SignUpEmployer() {
     const dispatch = useDispatch();
     const history = useHistory();
 
+    const [loading, setLoading] = useState(false);
     const [jiggle, setJiggle] = useState(true);
     const [verticalScreen, setVerticalScreen] = useState(window.innerWidth < window.innerHeight);
 
     useEffect(() => {
         return () => {
+            setLoading(undefined)
             setJiggle(undefined)
             setVerticalScreen(undefined)
         };
@@ -46,13 +48,15 @@ export function SignUpEmployer() {
         initialValues: initial,
         validationSchema: Yup.object().shape(shape),
         onSubmit: (values) => {
+            setLoading(true)
             employerService.add(values)
                 .then((r) => {
-                    dispatch(login(r.data.data, "employer"))
-                    toast("Welcome")
-                    history.push("/")
+                    dispatch(login(r.data.data, "employer"));
+                    toast("Welcome");
+                    history.push("/");
                 })
                 .catch(handleCatch)
+                .finally(() => setLoading(false))
         }
     });
 
@@ -74,5 +78,6 @@ export function SignUpEmployer() {
                      popupsize={popupSize} iconposition={iconPosition} type={"password"} formik={formik} key={6} jiggle={jiggle}/>
     ]
 
-    return <SignUp service={employerService} formik={formik} inputComponents={inputComponents} toggleJiggle={() => setJiggle(!jiggle)}/>
+    return <SignUp service={employerService} formik={formik} inputComponents={inputComponents}
+                   toggleJiggle={() => setJiggle(!jiggle)} loading={loading}/>
 }

@@ -17,6 +17,7 @@ export default function Login() {
     const dispatch = useDispatch();
     const history = useHistory();
 
+    const [loading, setLoading] = useState(false);
     const [jiggle, setJiggle] = useState(true);
     const [visible, setVisible] = useState(false);
     const [verticalScreen, setVerticalScreen] = useState(window.innerWidth < window.innerHeight);
@@ -25,6 +26,7 @@ export default function Login() {
     useEffect(() => {
         setVisible(true)
         return () => {
+            setLoading(undefined)
             setJiggle(undefined)
             setVisible(undefined)
             setVerticalScreen(undefined)
@@ -41,12 +43,13 @@ export default function Login() {
             password: Yup.string().required("Required")
         }),
         onSubmit: (values) => {
+            setLoading(true)
             userService.login(values.email, values.password)
                 .then(result => {
                     dispatch(login(result.data.data, result.data.message.substr(0, result.data.message.indexOf(" "))))
                     history.push("/")
                     toast("Welcome", {autoClose: 1500})
-                }).catch(handleCatch)
+                }).catch(handleCatch).finally(() => setLoading(false))
         }
     });
 
@@ -71,7 +74,8 @@ export default function Login() {
                                     </Grid.Column>
                                 </Grid>
 
-                                <Button animated="fade" type="submit" size="big" color="yellow" onClick={() => setJiggle(!jiggle)}>
+                                <Button animated="fade" type="submit" size="big" color="yellow" loading={loading}
+                                        onClick={() => setJiggle(!jiggle)}>
                                     <Button.Content hidden><Icon name='sign in alternate'/></Button.Content>
                                     <Button.Content visible>Login</Button.Content>
                                 </Button>

@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 import {Button, Form, Grid, Header, Icon, Message, Segment, Transition} from "semantic-ui-react";
 import {useEffect, useState} from "react";
 
-export function SignUp({formik, inputComponents, toggleJiggle}) {
+export function SignUp({formik, inputComponents, toggleJiggle, loading}) {
 
     const [visible, setVisible] = useState(false);
     const [loginMsgOpen, setLoginMsgOpen] = useState(true);
@@ -28,7 +28,7 @@ export function SignUp({formik, inputComponents, toggleJiggle}) {
                                 {inputComponents}
 
                                 <Button animated="fade" type="submit" size="large" color="purple" style={{marginTop: 15}}
-                                        onClick={toggleJiggle}>
+                                        onClick={toggleJiggle} loading={loading}>
                                     <Button.Content hidden><Icon name='signup'/></Button.Content>
                                     <Button.Content visible>Sign Up</Button.Content>
                                 </Button>
