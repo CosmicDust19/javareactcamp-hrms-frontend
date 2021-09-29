@@ -175,7 +175,7 @@ function Account() {
                 return (
                     <div>
                         <Segment basic>
-                            <SInput name="firstName" placeholder="First Name" formik={formik} style={{}}
+                            <SInput name="firstName" placeholder="First Name" formik={formik} style={{}} id="wrapper"
                                     icon={<Icon name={"user outline"} color={"yellow"}/>} iconPosition="left"/><br/>
                             <AccountSubmitButton color={"yellow"} onClick={updateFirstName}/>
                         </Segment>
@@ -189,10 +189,10 @@ function Account() {
             case "emailAndWebsite":
                 return (
                     <Segment basic>
-                        <SInput name="email" placeholder="Email" type="email" formik={formik} style={{}}
+                        <SInput name="email" placeholder="Email" type="email" formik={formik} id="wrapper"
                                 icon={<Icon name={"mail outline"} color={"red"}/>} iconPosition="left"/><br/>
                         <SInput name="website" placeholder="Website" type="website" formik={formik} style={{marginTop: 10}}
-                                icon={<Icon name={"world"} color={"red"}/>} iconPosition="left"/><br/>
+                                icon={<Icon name={"world"} color={"red"}/>} iconPosition="left" /><br/>
                         <AccountSubmitButton color={"red"} onClick={updateEmailAndWebsite} request/>
                     </Segment>
                 )
@@ -313,7 +313,7 @@ function Account() {
                         </Menu>
                     </Grid.Column>
                     <Grid.Column width={12}>
-                        <Segment basic content={menuSegments()}/>
+                        <Segment basic style={{opacity: 0.9}} content={menuSegments()}/>
                     </Grid.Column>
                 </Grid>
             </div>

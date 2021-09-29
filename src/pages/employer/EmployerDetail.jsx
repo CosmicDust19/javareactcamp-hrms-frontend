@@ -60,7 +60,7 @@ export default function EmployerDetail() {
         <Transition visible={visible} duration={300}>
             <div>
                 <Card raised fluid
-                      style={{borderRadius: 0, marginBottom: -1, marginTop: -1, backgroundColor: "rgba(0,0,0,0.02)"}}>
+                      style={{borderRadius: 0, marginBottom: -1, marginTop: -1, backgroundColor: "rgba(240,240,240,0.35)"}}>
                     <Card.Content>
                         <Grid columns={"equal"} stackable>
                             <Grid.Column verticalAlign={"middle"}>
@@ -79,7 +79,7 @@ export default function EmployerDetail() {
                     </Card.Content>
                 </Card>
 
-                <Table celled size={"large"} padded striped style={{marginTop: 1, marginBottom: 23, borderRadius: 0}}>
+                <Table celled size={"large"} padded striped style={{marginTop: 1, marginBottom: 23, borderRadius: 0, backgroundColor: "rgb(250,250,250, 0.7)"}}>
                     <Table.Body>
                         <Table.Row>
                             <Table.Cell width={2}><Icon name={"mail outline"} color={"red"}/>Email</Table.Cell>

@@ -64,15 +64,20 @@ export function SignUpSystemEmployee() {
     const iconPosition = "left"
     const inputComponents = [
         <SPopupInput icon="user" placeholder="First Name" name="firstName" popupposition={popupPosition} formik={formik}
-                     popupsize={popupSize} iconposition={iconPosition} key={1} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} key={1} jiggle={jiggle}
+                     className={"padded"} id={"wrapper"}/>,
         <SPopupInput icon="user" placeholder="Last Name" name="lastName" popupposition={popupPosition} formik={formik}
-                     popupsize={popupSize} iconposition={iconPosition} key={2} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} key={2} jiggle={jiggle}
+                     className={"padded"} id={"wrapper"}/>,
         <SPopupInput icon="at" placeholder="Email" name="email" type={"email"} popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={3} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={3} jiggle={jiggle}
+                     className={"padded"} id={"wrapper"}/>,
         <SPopupInput icon="lock" placeholder="Password" name="password" type={"password"} popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={4} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={4} jiggle={jiggle}
+                     className={"padded"} id={"wrapper"}/>,
         <SPopupInput icon="lock" placeholder="Password Repeat" name="passwordRepeat" popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} type={"password"} formik={formik} key={5} jiggle={jiggle}/>
+                     popupsize={popupSize} iconposition={iconPosition} type={"password"} formik={formik} key={5}
+                     className={"padded"} id={"wrapper"} jiggle={jiggle}/>
     ]
 
     return <SignUp service={sysEmplService} formik={formik} inputComponents={inputComponents}

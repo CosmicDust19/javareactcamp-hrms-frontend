@@ -27,7 +27,7 @@ export default function JobAdvertSyncButton({visible}) {
     }
 
     return (
-        <Button circular loading={loading} onClick={sync} icon={"sync"} style={{marginTop: 10, marginLeft: -30}}
-                compact floated={"right"} disabled={loading}/>
+        <Button circular loading={loading} onClick={sync} icon={"sync"} compact floated={"right"} disabled={loading}
+                style={{marginTop: 10, marginLeft: -30, backgroundColor: "rgba(238,238,238,0.2)"}}/>
     )
 }

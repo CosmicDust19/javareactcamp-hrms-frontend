@@ -66,19 +66,26 @@ export function SignUpCandidate() {
     const iconPosition = "left"
     const inputComponents = [
         <SPopupInput icon="user" placeholder="First Name" name="firstName" popupposition={popupPosition} formik={formik}
-                     popupsize={popupSize} iconposition={iconPosition} key={1} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} key={1} jiggle={jiggle}
+                     className={"padded"}/>,
         <SPopupInput icon="user" placeholder="Last Name" name="lastName" popupposition={popupPosition} formik={formik}
-                     popupsize={popupSize} iconposition={iconPosition} key={2} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} key={2} jiggle={jiggle}
+                     className={"padded"}/>,
         <SPopupInput icon="id card" placeholder="Nationality ID" name="nationalityId" popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} type={"number"} formik={formik} key={3} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} type={"number"} formik={formik} key={3}
+                     jiggle={jiggle} className={"padded"}/>,
         <SPopupInput icon="calendar check" placeholder="Birth Year" name="birthYear" popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} type={"number"} formik={formik} key={4} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} type={"number"} formik={formik} key={4}
+                     jiggle={jiggle} className={"padded"}/>,
         <SPopupInput icon="at" placeholder="Email" name="email" type={"email"} popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={5} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={5} jiggle={jiggle}
+                     className={"padded"}/>,
         <SPopupInput icon="lock" placeholder="Password" name="password" type={"password"} popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={6} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={6} jiggle={jiggle}
+                     className={"padded"}/>,
         <SPopupInput icon="lock" placeholder="Password Repeat" name="passwordRepeat" popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} type={"password"} formik={formik} key={7} jiggle={jiggle}/>
+                     popupsize={popupSize} iconposition={iconPosition} type={"password"} formik={formik} key={7}
+                     className={"padded"} jiggle={jiggle}/>
     ]
 
     return <SignUp service={candidateService} formik={formik} inputComponents={inputComponents}

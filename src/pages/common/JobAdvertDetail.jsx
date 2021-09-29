@@ -67,7 +67,7 @@ export default function JobAdvertDetail() {
     return (
         <Transition visible={visible} duration={300}>
             <div>
-                <Card raised fluid style={{borderRadius: 0, marginBottom: 0, backgroundColor: "rgba(0,0,0,0.02)"}}>
+                <Card raised fluid style={{borderRadius: 0, marginBottom: 0, backgroundColor: "rgba(240,240,240,0.35)"}}>
                     <Card.Content>
                         <Grid stackable={systemEmployee || publisherEmpl}>
 
@@ -103,7 +103,7 @@ export default function JobAdvertDetail() {
                     </Card.Content>
                 </Card>
 
-                <Table striped celled style={{borderRadius: 0, marginTop: 0}}>
+                <Table striped celled style={{borderRadius: 0, marginTop: 0, backgroundColor: "rgb(250,250,250, 0.7)"}}>
                     <Table.Body>
                         <Table.Row>
                             <Table.Cell collapsing>
@@ -146,7 +146,7 @@ export default function JobAdvertDetail() {
                     </Table.Body>
                 </Table>
 
-                <Table style={{borderRadius: 0}} definition structured color={"red"}>
+                <Table style={{borderRadius: 0, backgroundColor: "rgb(250,250,250, 0.7)"}} definition structured color={"red"}>
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>
@@ -163,7 +163,7 @@ export default function JobAdvertDetail() {
                         </Table.Row>
                         {(systemEmployee || publisherEmpl) && descUpdated ?
                             <Table.Row>
-                                <Table.Cell warning>
+                                <Table.Cell style={{backgroundColor: "rgba(255,200,150,0.25)"}}>
                                     <Segment content={<p className={"paragraph"}>{jobAdvert.jobAdvertisementUpdate.jobDescription}</p>}
                                              basic/>
                                 </Table.Cell>

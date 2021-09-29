@@ -65,17 +65,23 @@ export function SignUpEmployer() {
     const iconPosition = "left"
     const inputComponents = [
         <SPopupInput icon="building outline" placeholder="Company Name" name="companyName" popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={1} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={1} jiggle={jiggle}
+                     className={"padded"} id={"wrapper"}/>,
         <SPopupInput icon="world" placeholder="Website" name="website" popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={2} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={2} jiggle={jiggle}
+                     className={"padded"} id={"wrapper"}/>,
         <SPopupInput icon="phone" placeholder="Phone Number" name="phoneNumber" popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={3} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={3} jiggle={jiggle}
+                     className={"padded"} id={"wrapper"}/>,
         <SPopupInput icon="at" placeholder="Email" name="email" type={"email"} popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={4} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={4} jiggle={jiggle}
+                     className={"padded"} id={"wrapper"}/>,
         <SPopupInput icon="lock" placeholder="Password" name="password" type={"password"} popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={5} jiggle={jiggle}/>,
+                     popupsize={popupSize} iconposition={iconPosition} formik={formik} key={5} jiggle={jiggle}
+                     className={"padded"} id={"wrapper"}/>,
         <SPopupInput icon="lock" placeholder="Password Repeat" name="passwordRepeat" popupposition={popupPosition}
-                     popupsize={popupSize} iconposition={iconPosition} type={"password"} formik={formik} key={6} jiggle={jiggle}/>
+                     popupsize={popupSize} iconposition={iconPosition} type={"password"} formik={formik} key={6}
+                     className={"padded"} id={"wrapper"} jiggle={jiggle}/>
     ]
 
     return <SignUp service={employerService} formik={formik} inputComponents={inputComponents}

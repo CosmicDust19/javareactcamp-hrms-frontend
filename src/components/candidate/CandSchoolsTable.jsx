@@ -158,7 +158,7 @@ function CandSchoolsTable
                         <div>
                             <SDropdown options={candSchOption} name="candSchIds" placeholder="Schools"
                                        formik={formik} loading={false} disabled={candSchOption.length === 0}
-                                       style={{marginRight: 10, color: "rgba(220,150,10,0.9)"}}/>
+                                       style={{marginRight: 10, color: "rgba(220,150,10,0.9)", backgroundColor: "rgba(255,255,255,0.7)"}}/>
                             <Button icon="plus" color="blue" content={"Add"} onClick={addSchsToCv}
                                     disabled={formik.values.candSchIds.length === 0} style={{marginTop: 10, borderRadius: 10}}/>
                         </div> : null}

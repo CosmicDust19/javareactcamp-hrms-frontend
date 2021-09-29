@@ -62,24 +62,24 @@ export default function Login() {
                 <Header color="yellow" textAlign="center" content={"Login"}/>
                 <Grid centered stackable padded>
                     <Grid.Column mobile={6}>
-                        <Segment placeholder color={"yellow"} padded textAlign={"center"} raised style={{borderRadius: 15}}>
+                        <Segment placeholder color={"yellow"} padded textAlign={"center"} raised
+                                 style={{borderRadius: 14, opacity: 0.85, backgroundColor: "rgb(250,250,250, 0.7)"}}>
                             <Form size="large" onSubmit={formik.handleSubmit}>
-
                                 <Grid padded>
                                     <Grid.Column>
-                                        <SPopupInput icon="at" iconposition={"left"} placeholder="Email" name="email" jiggle={jiggle}
-                                                     formik={formik} popupposition={popupPosition} popupsize={popupSize}/>
-                                        <SPopupInput icon="lock" iconposition={"left"} placeholder="Password" name="password" jiggle={jiggle}
-                                                     type={"password"} formik={formik} popupposition={popupPosition} popupsize={popupSize}/>
+                                        <SPopupInput icon="at" iconposition={"left"} placeholder="Email" name="email"
+                                                     formik={formik} popupposition={popupPosition} popupsize={popupSize}
+                                                     jiggle={jiggle} className={"padded"}/>
+                                        <SPopupInput icon="lock" iconposition={"left"} placeholder="Password" name="password"
+                                                     type={"password"} formik={formik} popupposition={popupPosition} popupsize={popupSize}
+                                                     jiggle={jiggle} className={"padded"}/>
                                     </Grid.Column>
                                 </Grid>
-
                                 <Button animated="fade" type="submit" size="big" color="yellow" loading={loading}
-                                        onClick={() => setJiggle(!jiggle)}>
+                                        style={{borderRadius: 7}} onClick={() => setJiggle(!jiggle)}>
                                     <Button.Content hidden><Icon name='sign in alternate'/></Button.Content>
                                     <Button.Content visible>Login</Button.Content>
                                 </Button>
-
                             </Form>
                         </Segment>
                     </Grid.Column>
@@ -87,7 +87,8 @@ export default function Login() {
                 <Grid textAlign="center" stackable>
                     <Grid.Column width={9}>
                         <Transition visible={signUpMsgOpen} duration={200}>
-                            <Message warning onDismiss={() => setSignUpMsgOpen(false)}>
+                            <Message warning onDismiss={() => setSignUpMsgOpen(false)}
+                                     style={{backgroundColor: "rgba(253,241,227,0.3)", borderRadius: 9}}>
                                 <Icon name='help'/>
                                 Didn't you signed up yet ? Sign up as a
                                 <Link to={"/signup/candidate"} onClick={() => window.scrollTo(0, 100)}> candidate </Link>

@@ -44,7 +44,7 @@ export default function CandidateList() {
             <div>
                 <Card.Group itemsPerRow={3} stackable>
                     {candidates.map(candidate => (
-                        <Card style={{borderRadius: 5}} onClick={() => handleCandidateClick(candidate.id)}
+                        <Card style={{borderRadius: 5, backgroundColor: "rgba(255,255,255,0.8)"}} onClick={() => handleCandidateClick(candidate.id)}
                               key={candidate.id}>
                             {loading ?
                                 <Placeholder>
